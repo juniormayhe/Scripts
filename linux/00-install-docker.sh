@@ -2,7 +2,8 @@
 DOCKERUSER=junior
 clear
 echo '**********************************************'
-echo 'Preparing for docker installation on Fedora...'
+echo 'Preparing for docker installation on Fedora Host OS...'
+echo 'Note: Run this on Host OS'
 echo $'**********************************************\n'
 
 echo $'ATTENTION: Before proceed you must disable SELINUX:' 
@@ -38,3 +39,4 @@ echo 'Restarting docker to identify new docker user...'
 systemctl start docker
 
 docker --version
+echo $"Now you can run your container with docker run --name <CONTAINER_NAME> -i -t -p <PORT>:<PORT> $IMAGE /bin/bash"
