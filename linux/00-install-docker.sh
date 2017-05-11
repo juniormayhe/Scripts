@@ -1,4 +1,5 @@
 #!/bin/bash
+PROJECT_NAME=mean-exercises
 DOCKERUSER=junior
 clear
 echo '**********************************************'
@@ -41,6 +42,10 @@ systemctl start docker
 echo 'Turning off firewalld for exposing HTTP navigation...'
 sudo systemctl stop firewalld
 sudo systemctl disable firewalld
+
+echo "#!/bin/bash
+#assuming your container is 172.17.0.2
+172.17.0.2 $PROJECT_NAME" > /etc/profile.d/start-nginx.sh
 
 
 docker --version

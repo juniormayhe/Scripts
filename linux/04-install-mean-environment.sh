@@ -22,7 +22,6 @@ dnf install nginx -y
 echo "Configuring nginx..."
 mkdir -p /etc/nginx/sites-available
 mkdir -p /etc/nginx/sites-enabled
-echo "include /etc/nginx/sites-enabled/*" >> /etc/nginx/nginx.conf
 
 echo "#nginx webserver configuration for $PROJECT_NAME
 # Configuration for the server
