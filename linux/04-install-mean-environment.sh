@@ -28,9 +28,9 @@ echo "#nginx webserver configuration for $PROJECT_NAME
 # Configuration for the server
 server {
 
-	# Running port
+	# Running port (YOU MUST COMPARE LISTEN WITH /etc/nginx/nginx.conf)
 	listen 80;
-	root /mean-exercises;
+	root /$PROJECT_NAME;
 	# Proxying the connections connections
 	location / {
 		proxy_redirect     off;
@@ -46,7 +46,9 @@ ln -s /etc/nginx/sites-available/$PROJECT_NAME.conf /etc/nginx/sites-enabled/$PR
 
 echo "Adding script to auto start nginx after login..."
 echo "#!/bin/bash
-nginx" > /etc/profile.d/start-nginx.sh
+CONTAINER_NAME=$PROJECT_NAME
+nginx
+cd /$CONTAINER_NAME" > /etc/profile.d/start-nginx.sh
 
 echo "Downloading mongodb 3.4.2..."
 wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.4.2.tgz
@@ -77,8 +79,6 @@ chmod +x /$PROJECT_NAME/shell/stop-database.sh
 echo "mongod --dbpath /$PROJECT_NAME/data/db/ --logpath /$PROJECT_NAME/data/log/$PROJECT_NAME.log --fork" > /$PROJECT_NAME/shell/start-database.sh
 chmod +x /$PROJECT_NAME/shell/start-database.sh
 /$PROJECT_NAME/shell/start-database.sh
-
-
 
 echo $"Your folder is /$PROJECT_NAME"
 echo $"\n\nATTENTION: YOU MUST edit /etc/nginx/nginx.conf. Please find:"
