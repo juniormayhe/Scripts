@@ -38,5 +38,10 @@ usermod -aG docker $DOCKERUSER
 echo 'Restarting docker to identify new docker user...'
 systemctl start docker
 
+echo 'Turning off firewalld for exposing HTTP navigation...'
+sudo systemctl stop firewalld
+sudo systemctl disable firewalld
+
+
 docker --version
 echo $"Now you can run your container with docker run --name <CONTAINER_NAME> -i -t -p <PORT>:<PORT> $IMAGE /bin/bash"

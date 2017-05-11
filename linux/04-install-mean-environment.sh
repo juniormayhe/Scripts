@@ -17,6 +17,36 @@ dnf install wget -y
 dnf install nodejs -y
 dnf install git -y
 dnf install vim -y
+dnf install nginx -y
+
+echo "Configuring nginx..."
+mkdir -p /etc/nginx/sites-available
+mkdir -p /etc/nginx/sites-enabled
+echo "include /etc/nginx/sites-enabled/*" >> /etc/nginx/nginx.conf
+
+echo "#nginx webserver configuration for $PROJECT_NAME
+# Configuration for the server
+server {
+
+	# Running port
+	listen 80;
+	root /mean-exercises;
+	# Proxying the connections connections
+	location / {
+		proxy_redirect     off;
+		proxy_set_header   Host $host;
+		proxy_set_header   X-Real-IP $remote_addr;
+		proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header   X-Forwarded-Host $server_name;
+	}
+}
+" > /etc/nginx/sites-available/$PROJECT_NAME.conf
+
+ln -s /etc/nginx/sites-available/$PROJECT_NAME.conf /etc/nginx/sites-enabled/$PROJECT_NAME.conf
+
+echo "Adding script to auto start nginx after login..."
+echo "#!/bin/bash
+nginx" > /etc/profile.d/start-nginx.sh
 
 echo "Downloading mongodb 3.4.2..."
 wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.4.2.tgz
@@ -48,4 +78,13 @@ echo "mongod --dbpath /$PROJECT_NAME/data/db/ --logpath /$PROJECT_NAME/data/log/
 chmod +x /$PROJECT_NAME/shell/start-database.sh
 /$PROJECT_NAME/shell/start-database.sh
 
+
+
 echo $"Your folder is /$PROJECT_NAME"
+echo $"\n\nATTENTION: YOU MUST edit /etc/nginx/nginx.conf. Please find:"
+echo " include /etc/nginx/conf.d/*.conf;"
+echo " and add: "
+echo "include /etc/nginx/sites-enabled/*;"
+echo "change main listen port 80 if needed in /etc/nginx/nginx.conf"
+echo "then within container, run in background:"
+echo "nginx"
