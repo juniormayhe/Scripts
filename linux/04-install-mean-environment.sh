@@ -46,9 +46,11 @@ ln -s /etc/nginx/sites-available/$PROJECT_NAME.conf /etc/nginx/sites-enabled/$PR
 
 echo "Adding script to auto start nginx after login..."
 echo "#!/bin/bash
+#automatically run mongod and nginx servers
 CONTAINER_NAME=$PROJECT_NAME
 nginx
-cd /$CONTAINER_NAME" > /etc/profile.d/start-nginx.sh
+/$PROJECT_NAME/shell/start-database.sh
+cd /$PROJECT_NAME" > /etc/profile.d/start-nginx.sh
 
 echo "Downloading mongodb 3.4.2..."
 wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.4.2.tgz
