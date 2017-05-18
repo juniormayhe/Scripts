@@ -9,6 +9,7 @@ echo "this script will create a new docker container with nginx,"
 echo "accept tcp connection from all ports and point your"
 printf $"local application path $LOCALHOST_PATH to docker's /usr/share/nginx/html"
 echo "**********************************************"
+
 docker run --name $CONTAINER_NAME -v $LOCALHOST_PATH:/usr/share/nginx/html:ro -t -h $DOCKERIZED_HOSTNAME -P -d nginx:alpine nginx -g 'daemon off;'
 
 #wanna go back to tty?

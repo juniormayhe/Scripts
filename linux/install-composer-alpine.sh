@@ -4,6 +4,7 @@ clear
 echo "****************************"
 echo "Adding nginx in Alpine"
 echo "****************************"
+apk update
 apk add wget nginx
 echo "ATTENTION:"
 echo "If you intend to install nginx and composer in Alpine, "
@@ -29,7 +30,7 @@ echo "listen.mode = 0660"
 echo "listen.allowed_clients = 127.0.0.1"
 
 echo $"\n\nInstalling php7 for Alpine..."
-apk add curl php7 php7-mbstring php7-openssl php7-phar php7-json php7-zlib
+apk add curl php7 php7-mbstring php7-openssl php7-phar php7-json php7-zlib php7-zip
 /usr/bin/php7 -v
 ln -s /usr/bin/php7 /usr/bin/php
 
