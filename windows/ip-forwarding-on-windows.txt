@@ -1,0 +1,6 @@
+REM TO ADD THE PROXY
+netsh interface portproxy add v4tov4 listenport=80 listenaddress=192.168.0.194 connectport=80 connectaddress=192.168.195.141
+
+
+REM TO REMOVE THE PROXY 
+netsh interface portproxy delete v4tov4 listenport=80 listenaddress=192.168.0.194
