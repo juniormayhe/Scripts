@@ -1,18 +1,4 @@
---declare @teste varchar(max)
---declare @total int, @columna int, @fila int
---set @total=1
---set @columna=1
---set @fila=1
---while @total < 7
---begin
---  select @fila as fila, @columna as columna, @total as total, dbo.SplitIndex(',', '[1],[Nombre],[Apellidos],[2],[Nombre2],[Apellidos2]', @columna)
---  set @total = @total +1
---  set @columna= @columna+1
---  if @columna = 4 begin
---	set @fila= @fila +1
---  end
---end
-
+--AuditoriaNegocio
 
 DECLARE @TempTableVariable TABLE(
         element_id INT,
@@ -23,85 +9,87 @@ DECLARE @TempTableVariable TABLE(
         StringValue NVARCHAR(MAX),
         ValueType NVARCHAR(10)
     )
-    -- Parse JSON string into a temp table
+
 INSERT INTO @TempTableVariable
-Select * from parseJSON('[
-  { "firstName": "John", "lastName": "Smith", "age": 38 },
-  { "firstName": "Jane", "lastName": "Stewart", "age": 25 }
+SELECT * FROM parseJSON('[
+  { "firstName": "Gustavo", "lastName": "Jaramillo", "age": "25" },
+  { "firstName": "John", "lastName": "Smith", "age": "38" },
+  { "firstName": "Jane", "lastName": "Stewart", "age": "25" }
 ]')
-select t.[sequenceNo], t2.[NAME],t2.[StringValue] 
-from @TempTableVariable t
-inner join @TempTableVariable t2 on t.[sequenceNo]=t2.parent_ID
-group by t.[sequenceNo], t2.[NAME],t2.[StringValue]  --, t.parent_ID,t.[NAME],t.StringValue,t.ValueType  
-declare @totalColumnas int
 
-select top 1 @totalColumnas = count(parent_ID) from @TempTableVariable
-where parent_ID is not null and [Object_ID] is null
-group by parent_ID
---select @totalColumnas as totalColumnas
 
-DECLARE @colsUnpivot AS NVARCHAR(MAX),
+--SELECT t.[sequenceNo], t2.[NAME], CAST(t2.[StringValue]  AS VARCHAR) AS [StringValue]
+--FROM @TempTableVariable t
+--INNER JOIN @TempTableVariable t2 on t.[sequenceNo]=t2.parent_ID
+--where t2.[Object_ID] IS NULL
+--GROUP BY t.[sequenceNo], t2.[NAME],t2.[StringValue]  --, t.parent_ID,t.[NAME],t.StringValue,t.ValueType  
+
+DECLARE @totalColumnasPorRegistro INT
+
+
+SELECT TOP 1 @totalColumnasPorRegistro = count(parent_ID) FROM @TempTableVariable
+WHERE parent_ID IS NOT NULL AND [Object_ID] IS NULL
+GROUP BY parent_ID
+print @totalColumnasPorRegistro 
+
+DECLARE @max_filas INT
+SELECT @max_filas=COUNT(DISTINCT parent_ID) FROM @TempTableVariable WHERE [Object_ID] IS NULL
+
+DECLARE @nombresColumnas AS NVARCHAR(MAX),
     @query  AS NVARCHAR(MAX),
-    @colsPivot as  NVARCHAR(MAX)
+    @valoresColumnas as  NVARCHAR(MAX)
 
 --columnas
-select @colsUnpivot = 'DECLARE @TEMP TABLE(' + stuff((select ','+quotename(C.[NAME]) +' VARCHAR(MAX)'
+select @nombresColumnas = 'DECLARE @TEMP TABLE(' + stuff((select ','+quotename(C.[NAME]) +' VARCHAR(MAX)'
 from @TempTableVariable as C
 where C.parent_ID is not null
 GROUP BY C.[NAME]
 for xml path('')), 1, 1, '')+');'
-
---select @colsUnpivot 
-
---EXEC(@colsUnpivot)
-
-
-
+print @nombresColumnas 
 --valores
-select @colsPivot = STUFF((SELECT  ',' + quotename(StringValue)
-from @TempTableVariable t
-where t.parent_ID is not null and t.[Object_ID] is null
+SELECT @valoresColumnas = STUFF((SELECT  ',' + quotename(StringValue)
+FROM @TempTableVariable t
+WHERE t.parent_ID IS NOT NULL AND t.[Object_ID] IS NULL
 GROUP BY t.parent_ID,t.[NAME],StringValue
 FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)') ,1,1,'')
+print @valoresColumnas
 
---select @colsPivot
+DECLARE @contador INT, @columnaActual INT, @fila INT, @totalColumnas INT
+DECLARE @insert VARCHAR(MAX)
+SET @contador=1
+SET @columnaActual=1
+SET @fila=1
+SET @totalColumnas = @totalColumnasPorRegistro * @max_filas
 
-declare @totalFilas int, @columna int, @fila int
-declare @insert varchar(max)
-set @totalFilas=1
-set @columna=1
-set @fila=1
-select @insert= 'INSERT INTO @TEMP VALUES ('
---select @insert as ins
+SELECT @insert= 'INSERT INTO @TEMP VALUES ('
 
-while @totalFilas < 7
-begin
-	declare @valorColumnaActual varchar(max)
-	set @valorColumnaActual = dbo.SplitIndex(',', @colsPivot, @columna)
-  set @insert = @insert + @valorColumnaActual
-  --select @fila as fila, @columna as columna, @totalFilas as total, @valorColumnaActual as valor
-  set @totalFilas = @totalFilas+1
-  set @columna= @columna+1
-  if @columna = @totalColumnas+1 OR @columna = 7 begin
-	set @fila= @fila +1
-	set @insert = @insert + ');'
+WHILE @contador <= @totalColumnas 
+BEGIN
+	DECLARE @valorColumnaActual VARCHAR(MAX)
+	SET @valorColumnaActual = dbo.SplitIndex(',', @valoresColumnas, @columnaActual)
+	SET @insert = @insert + @valorColumnaActual
+	DECLARE @saltar bit
+	SET @saltar = IIF((@totalColumnas - @columnaActual)%  @totalColumnasPorRegistro = 0,1,0)
+	select @saltar ,@fila as fila, @totalColumnas as totalCols, @columnaActual as columnaActual, @contador as total, @valorColumnaActual as valor, @insert
 	
-	--select @insert 
-	--execute(@insert)
-	--execute insert and reset insert
-	if @fila < 3 begin
-		set @insert=@insert+'INSERT INTO @TEMP VALUES ('
-		--select @fila as fila, @totalColumnas as totalCol, @columna as col
-	end
-  end
-  else begin
-	set @insert = @insert + ','
-  end
-  
-end
+	SET @contador = @contador+1
+	
+	IF @saltar = 1 BEGIN
+		SET @fila= @fila +1
+		SET @insert = @insert + ');'
+		
+		IF @fila <= @max_filas BEGIN
+			SET @insert=@insert+'INSERT INTO @TEMP VALUES ('
+		END
+	END
+	ELSE BEGIN
+		SET @insert = @insert + ','
+	END
+	SET @columnaActual= @columnaActual+1
+END
 SET @insert = @insert +'SELECT * FROM @TEMP';
-set @insert = @colsUnpivot + REPLACE(REPLACE(@insert,']',''''),'[','''')
---select @insert
+set @insert = @nombresColumnas + REPLACE(REPLACE(@insert,']',''''),'[','''')
+print @insert
 execute(@insert )
 
 
