@@ -1,0 +1,15 @@
+#file must be at /etc/systemd/system/your-service-name.service
+
+[Unit]
+Description=Some nice description for your service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/root/your-start-script.sh
+TimeoutStartSec=0
+ExecStop=/root/your-stop-script.sh
+ExecReload=/root/your-reload-script.sh
+
+[Install]
+WantedBy=default.target
