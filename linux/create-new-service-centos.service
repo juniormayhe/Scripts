@@ -1,4 +1,7 @@
 #file must be at /etc/systemd/system/your-service-name.service
+#after file creation, you must reload systemctl daemon-reload 
+#then use systemctl enable your-service.name.service 
+#and at last systemctl start/stop/restart your-service-name.service
 
 [Unit]
 Description=Some nice description for your service
