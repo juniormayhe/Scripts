@@ -1,0 +1,5 @@
+To disable autoplay for videos, visit
+
+chrome://flags/#autoplay-policy
+
+then choose document user activation is required
