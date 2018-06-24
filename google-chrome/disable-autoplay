@@ -1,5 +1,12 @@
+1) first alternative
+
 To disable autoplay for videos, visit
 
 chrome://flags/#autoplay-policy
 
 then choose document user activation is required
+
+2) alternative, install turn off the lights extension from https://chrome.google.com/webstore/category/extensions
+
+got to https://www.turnoffthelights.com/extension/options.html
+enable AutoStop by clicking at "Stop playing the video automatically when I open a web page"
