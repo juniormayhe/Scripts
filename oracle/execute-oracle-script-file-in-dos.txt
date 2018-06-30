@@ -1,0 +1,14 @@
+- Execute a script in Command Prompt / DOS as a specific user
+
+exit | sqlplus -S <username>/<password>@<TNS INSTANCE> @file-name.sql
+
+- Execute a script in Command Prompt / DOS as SYSDBA
+
+exit | sqlplus -S sys/oracle@MY_INSTANCE as sysdba @file-name.sql
+
+- file-name.sql content sample:
+
+select * from your_table;
+
+quit;
+/
