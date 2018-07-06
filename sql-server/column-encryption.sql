@@ -54,10 +54,10 @@ CLOSE SYMMETRIC KEY your_symkey_name
 ALTER TABLE Recipient DROP COLUMN Email
 
 --rename the new column you just added EncryptedEmail to a suitable name like Email 
-exec sp_rename @objname = 'MAILING.dbo.Recipient.EncryptedEmail',	@newname = 'Email', @objtype = 'COLUMN'
+exec sp_rename @objname = 'MAILING.dbo.Recipient.EncryptedEmail', @newname = 'Email', @objtype = 'COLUMN'
 
 -- review if data is being decrypted
-OPEN SYMMETRIC KEY symkey_mailing DECRYPTION BY CERTIFICATE cert_mailing;  
-SELECT Email, CONVERT(varchar(max), DecryptByKey(EmailCifrado)) AS 'DecryptedEmail' FROM Recipient;  
-CLOSE SYMMETRIC KEY symkey_mailing;
+OPEN SYMMETRIC KEY your_symkey_name DECRYPTION BY CERTIFICATE your_cert_name;  
+SELECT Email, CONVERT(varchar(max), DecryptByKey(Email)) AS 'DecryptedEmail' FROM Recipient;  
+CLOSE SYMMETRIC KEY your_symkey_name;
 
