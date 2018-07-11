@@ -11,4 +11,5 @@ SET PATH=%CWRSYNCHOME%\BIN;%PATH%
 
 ECHO Copy data to a root folder named TargetFolder on Drive C
 ECHO infotaxi123 | ls -l
+echo on local server generate ssh-keygen -t rsa and paste id_rsa.pub content into remote server's /root/.ssh/authorized_keys
 REM infotaxi123 | rsync -trzh --progress --stats -p --chmod=ugo=rwX root@192.168.0.7:/var/spool/asterisk/monitor/* /cygdrive/c/TargetFolder
