@@ -9,6 +9,6 @@ SELECT DecryptByKey(a_column)) as DecryptedColumn FROM YourTable;
 CLOSE SYMMETRIC KEY your_symkey_name;
 
 --on ssms you can decrypt by key or autocert
-SELECT  Email,
+SELECT  Email as encryptedEmail,
 CONVERT(varchar(max), DecryptByKey(Email)) as convertDecryptByKey,
 CONVERT(varchar(max), DecryptByKeyAutocert(CERT_ID('cert_mailing'), NULL, Email)) as convertDecryptByCert FROM Recipient;
