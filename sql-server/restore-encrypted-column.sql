@@ -31,3 +31,8 @@ SELECT * FROM sys.certificates where [name]='your_cert_name'
 OPEN SYMMETRIC KEY symkey_mailing DECRYPTION BY CERTIFICATE your_cert_name;  
 SELECT Email, CONVERT(varchar(max), DecryptByKey(Email)) AS 'DecryptedEmail' FROM Recipient;  
 CLOSE SYMMETRIC KEY your_symkey_name;
+
+-- you can decrypt a column by key or by autocert
+SELECT  Email as encryptedEmail,
+CONVERT(varchar(max), DecryptByKey(Email)) as convertDecryptByKey,
+CONVERT(varchar(max), DecryptByKeyAutocert(CERT_ID('cert_mailing'), NULL, Email)) as convertDecryptByCert FROM Recipient;
