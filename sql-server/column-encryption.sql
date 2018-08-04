@@ -61,3 +61,8 @@ OPEN SYMMETRIC KEY your_symkey_name DECRYPTION BY CERTIFICATE your_cert_name;
 SELECT Email, CONVERT(varchar(max), DecryptByKey(Email)) AS 'DecryptedEmail' FROM Recipient;  
 CLOSE SYMMETRIC KEY your_symkey_name;
 
+--update data using encrypted column on where clause
+OPEN SYMMETRIC KEY symkey_mailing DECRYPTION BY CERTIFICATE cert_mailing;  
+UPDATE Recipient SET IsValid=1 WHERE DecryptByKey(Email) = 'email@domain.com';
+CLOSE SYMMETRIC KEY symkey_mailing  
+
