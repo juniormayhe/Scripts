@@ -1,0 +1,5 @@
+#!/bin/bash
+echo "Force stop of running docker container"
+docker stop myapp
+docker rm myapp
+docker kill myapp
