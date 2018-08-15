@@ -72,3 +72,21 @@ Stop or remove the image if needed
 docker stop mywebapp
 docker rm mywebapp
 ```
+
+To avoid using Docker Hub, backup a image, save the desired IMAGE ID as tar file
+```
+docker images
+docker save -o mywebapp.tar IMAGEID
+```
+
+to import image from tar file on a target server
+```
+docker load -i mywebapp.tar
+docker images
+```
+
+tag the imported image on target server
+```
+docker tag IMAGEID company/mywebapp
+docker images
+```
