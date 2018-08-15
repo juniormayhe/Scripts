@@ -14,7 +14,7 @@ Setup docker login at CLI
 docker login
 ```
 
-Create your NET Core app with a dockerfile such as 
+Create your NET Core app with a dockerfile at Project folder such as 
 
 ```
 FROM microsoft/dotnet:sdk AS build-env
@@ -32,6 +32,24 @@ RUN dotnet publish -c Release -o out
 FROM microsoft/dotnet:aspnetcore-runtime
 WORKDIR /app
 COPY --from=build-env /app/out .
+ENTRYPOINT ["dotnet", "MyWebApp.dll"]
+```
+
+If you csproj depends on other csprojs, go to root application folder and create a Dockerfile on Solution folder
+
+```
+FROM microsoft/dotnet:sdk AS build-env
+WORKDIR /app
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet restore MyWebApp/MyWebApp.csproj
+RUN dotnet publish MyWebApp/MyWebApp.csproj -c Release -o out
+
+# Build runtime image
+FROM microsoft/dotnet:aspnetcore-runtime
+WORKDIR /app
+COPY --from=build-env /app/MyWebApp/out ./
 ENTRYPOINT ["dotnet", "MyWebApp.dll"]
 ```
 
