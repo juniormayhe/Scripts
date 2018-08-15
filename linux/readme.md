@@ -38,7 +38,7 @@ ENTRYPOINT ["dotnet", "MyWebApp.dll"]
 Build your dockerfile
 
 ```
-docker build -t mywebapp .
+docker build -t company/mywebapp .
 ```
 
 Commit changes to the new image mywebapp
