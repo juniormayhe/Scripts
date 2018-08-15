@@ -1,6 +1,6 @@
 Since `/usr/lib/oracle/12.2/client64/network/admin/TNSNAMES.ora` cannot be found within microsoft/dotnet docker image, even with Oracle client installed, we have to add full connection at `Data Source` attribute:
 
-## netcore appsettings.json within docker
+## NET Core appsettings.json within docker
 
 ```
 {
@@ -23,7 +23,7 @@ Since `/usr/lib/oracle/12.2/client64/network/admin/TNSNAMES.ora` cannot be found
 }
 ```
 
-## converting rpm files
+## Converting rpm files
 
 RPM files for Oracle instant client 12:
 
