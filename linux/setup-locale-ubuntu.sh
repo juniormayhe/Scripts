@@ -19,6 +19,7 @@ locale-gen es_CO.UTF-8
 locale -a
 
 # setup locale using > to replace or >> to append as needed
-echo "LANG=es_CO.UTF-8" > /etc/default/locale
+#echo "LANG=es_CO.UTF-8" > /etc/default/locale
+update-locale LC_ALL=es_CO.UTF-8 LANG=es_CO.UTF-8
 
 #reboot or stop docker container
