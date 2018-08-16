@@ -5,7 +5,7 @@
 
 Main docker commands: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04
 
-## Ubuntu sources.list
+## Ubuntu /etc/apt/sources.list
 
 ```
 deb http://archive.ubuntu.com/ubuntu bionic main
