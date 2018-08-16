@@ -15,5 +15,8 @@ apt-get install -y locales
 #generate a locale
 locale-gen es_CO.UTF-8
 
-# check your new locale
-cat /etc/default/locale
+# check if your new locale was added
+locale -a
+
+# setup locale using > to replace or >> to append as needed
+echo "LANG=es_CO.UTF-8" > /etc/default/locale
