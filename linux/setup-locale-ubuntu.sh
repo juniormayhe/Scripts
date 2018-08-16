@@ -23,3 +23,6 @@ locale -a
 update-locale LC_ALL=es_CO.UTF-8 LANG=es_CO.UTF-8
 
 #reboot or stop docker container
+
+#configure timezone
+dpkg-reconfigure tzdata
