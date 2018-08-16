@@ -20,3 +20,5 @@ locale -a
 
 # setup locale using > to replace or >> to append as needed
 echo "LANG=es_CO.UTF-8" > /etc/default/locale
+
+#reboot or stop docker container
