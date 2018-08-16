@@ -5,6 +5,15 @@
 
 Main docker commands: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04
 
+## Ubuntu sources.list
+
+```
+deb http://archive.ubuntu.com/ubuntu bionic main
+deb http://archive.ubuntu.com/ubuntu bionic-security main
+deb http://archive.ubuntu.com/ubuntu bionic-updates main
+deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+```
+
 ## Publishing docker image on Docker Hub
 
 Create an account at https://hub.docker.com/u/taxindividual/
