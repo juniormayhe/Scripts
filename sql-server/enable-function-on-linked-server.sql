@@ -1,4 +1,4 @@
---on target database, run:
+--on target database where linked server was created, run:
 
 USE [master]
 GO
