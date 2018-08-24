@@ -2,14 +2,15 @@ ALTER FUNCTION [dbo].[CanSendToEmail]
 (
 	@id int
 )
-RETURNS varchar(70)
+RETURNS varchar(max)
 AS
 BEGIN
 	
-	DECLARE @email varchar(70)
+	DECLARE @email varchar(max)
 	--uses an already existing certificate 
-	SELECT @email = DecryptByKeyAutocert(CERT_ID('cert_mailing'), NULL, r.Email) as Email 
+	SELECT @email = CONVERT(VARCHAR(MAX), DecryptByKeyAutocert(CERT_ID('cert_mailing'), NULL, r.Email)) 
 	FROM Recipient r
+	WHERE r.Id = @id
 	AND r.Unsubscribe = 0
 	AND r.IsValid = 1
 	
