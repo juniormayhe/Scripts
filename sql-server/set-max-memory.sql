@@ -1,4 +1,11 @@
 
+/*
+Assumptions
+You're only running one SQL Server
+You're not running SSIS, SSRS, SSAS, etc.
+You're not using it to run any other applications on the server
+*/
+
 -- recommended settings
 --GB	MB	    Recommended Setting	
 --16	16384	  12288	
