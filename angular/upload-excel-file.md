@@ -119,3 +119,105 @@ import.component.html
   </form>
 </div>
 ```
+
+environments/environment.ts
+```
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:7001/api/v1/'
+};
+```
+
+packages.json
+```
+  "dependencies": {
+    "@angular/animations": "^6.1.0",
+    "@angular/common": "^6.1.0",
+    "@angular/compiler": "^6.1.0",
+    "@angular/core": "^6.1.0",
+    "@angular/forms": "^6.1.0",
+    "@angular/http": "^6.1.0",
+    "@angular/platform-browser": "^6.1.0",
+    "@angular/platform-browser-dynamic": "^6.1.0",
+    "@angular/router": "^6.1.0",
+    "@auth0/angular-jwt": "^2.0.0",
+    "alertifyjs": "^1.11.1",
+    "bootstrap": "^4.1.3",
+    "core-js": "^2.5.4",
+    "font-awesome": "^4.7.0",
+    "ng2-file-upload": "^1.3.0",
+    "ngx-bootstrap": "^3.0.1",
+    "rxjs": "^6.0.0",
+    "zone.js": "~0.8.26"
+```
+
+Yourcontroller in NET Core
+
+```
+        private static int GetTableDepth(ExcelWorksheet worksheet, int headerOffset)
+        {
+            var i = 1;
+            var j = 1;
+            var cellValue = worksheet.Cells[i + headerOffset, j].Value;
+            while (cellValue != null)
+            {
+                i++;
+                cellValue = worksheet.Cells[i + headerOffset, j].Value;
+            }
+
+            return i - 1; //subtract one because we're going from rownumber (1 based) to depth (0 based)
+        }
+        
+        [HttpPost]
+        [Route("your-import-action")]
+        public IActionResult ImportFromFile([FromForm] ExcelFileToImport excelFileToImport){
+            
+            var file = excelFileToImport.File;
+            if (file.Length == 0)
+            {
+                return BadRequest("File is empty");
+            }
+            try {
+                List<Task> tasks = new List<Task>();
+                using (var stream = file.OpenReadStream())
+                {
+                    using (ExcelPackage package = new ExcelPackage(stream))
+                    {
+                        ExcelWorksheet worksheet = package.Workbook.Worksheets.FirstOrDefault();
+                        var headerOffset = 1; //have to skip header row
+                        var totalLines = GetTableDepth(worksheet, headerOffset);
+                        
+                        for (var i = 1; i <= totalLines; i++)
+                        {
+                            tasks.Add(import(worksheet, headerOffset, i));
+                        }
+                    }
+                }
+                Task.WaitAll(tasks.ToArray());
+            }
+            catch(Exception ex) {
+                return BadRequest($"There was a problem while uploading your file {ex.Message}");
+            }
+
+            return NoContent();
+
+        }
+```
+
+ExcelFileToImport.cs
+```
+    public class ExcelFileToImport
+    {
+        //a file sent from http request
+        public IFormFile File { get; set; }
+        
+    }
+```
+
+NET Core packages in .csproj
+```
+  <ItemGroup>
+    ...
+    <PackageReference Include="EPPlus.Core" Version="1.5.4"/>
+  </ItemGroup>
+```
