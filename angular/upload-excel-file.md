@@ -73,10 +73,10 @@ import.component.html
     or browse your file...
 
     <div class="custom-file">
-      <input #uploadEl type="file" ng2FileSelect [uploader]="uploader" class="custom-file-input" id="archivoExcel" 
+      <input #uploadEl type="file" ng2FileSelect [uploader]="uploader" class="custom-file-input" id="excelFile" 
         placeholder="Browse your Excel file (XLSX)..." 
         required>
-      <label class="custom-file-label" for="archivoExcel">Choose an Excel...</label>
+      <label class="custom-file-label" for="excelFile">Choose an Excel...</label>
       <div class="invalid-feedback">Archivo inválido</div>
     </div>
 
