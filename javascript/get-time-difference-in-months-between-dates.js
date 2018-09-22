@@ -8,4 +8,4 @@ function diffMonths(dt2, dt1)
 
 dt1 = new Date(2018,10,1);
 dt2 = new Date(2018,12,31);
-console.log(diff_months(dt1, dt2));
+console.log(diffMonths(dt1, dt2));
