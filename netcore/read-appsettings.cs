@@ -1,7 +1,7 @@
 // packages:
 // Microsoft.Extensions.Configuration.Binder
 // Microsoft.Extensions.Configuration.Json
-namespace Farfetch.RoutingService.Infrastructure.CrossCutting.Settings.Utils
+namespace Infrastructure.CrossCutting.Settings.Utils
 {
     using System.IO;
     using Microsoft.Extensions.Configuration;
