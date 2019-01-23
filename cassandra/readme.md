@@ -8,3 +8,14 @@ https://academy.datastax.com/downloads?destination=downloads&dxt=DX
 ```
 cqlsh localhost 9042 -f c:\temp\cassandra-single-file.cql
 ```
+
+## Create keyspace if does not existin in Cassandra
+```
+CREATE ROLE IF NOT EXISTS keyspacename WITH PASSWORD = '1234' AND LOGIN = true AND SUPERUSER = false;
+```
+
+## Grant user rights on cassandra keyspace
+```
+GRANT SELECT ON ALL KEYSPACES TO keyspacename;
+GRANT MODIFY ON ALL KEYSPACES TO keyspacename;
+```
