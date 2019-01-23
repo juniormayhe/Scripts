@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS customer (
 	name text,
 	location FROZEN<location>,
 	enabled boolean,
+	reviews MAP<int, int>,
 	PRIMARY KEY (id, client_id)
 );
 ```
@@ -65,7 +66,14 @@ INSERT INTO customer JSON
     "location": {
        "geo_location": ["",""],
        "country_id":"BR"
-    }
+    },
+    "reviews": {
+        "1":"2",
+        "2":"10",
+        "3":"1",
+        "4":"10",
+        "5":"230"
+    },
 }' IF NOT EXISTS;
 
 ```
