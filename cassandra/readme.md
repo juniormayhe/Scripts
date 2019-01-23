@@ -19,3 +19,22 @@ CREATE ROLE IF NOT EXISTS keyspacename WITH PASSWORD = '1234' AND LOGIN = true A
 GRANT SELECT ON ALL KEYSPACES TO keyspacename;
 GRANT MODIFY ON ALL KEYSPACES TO keyspacename;
 ```
+
+## Create user defined type
+```
+CREATE TYPE IF NOT EXISTS location (
+   geo_location tuple<text, text>,
+   zip_code text,
+   city_id int,
+   state_id int,
+   country_id text
+);
+
+CREATE TABLE IF NOT EXISTS customer (
+	id uuid,
+	client_id int,
+	name text,
+	location FROZEN<location>,
+	PRIMARY KEY (id, client_id)
+);
+```
