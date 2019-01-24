@@ -1,5 +1,2 @@
-Try it live
+Try it live at http://jsfiddle.net/JuniorMayhe/prnLjvd1/84/
 
-```
-http://jsfiddle.net/JuniorMayhe/prnLjvd1/84/
-```
