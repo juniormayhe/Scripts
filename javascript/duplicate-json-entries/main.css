@@ -1,0 +1,33 @@
+body {
+  padding: 20px;
+  font-family: Helvetica;
+  background: #fff;
+  border-radius: 4px;
+  padding: 20px;
+  font-size: 15px;
+  transition: all 0.2s;
+  margin: 0 auto;
+  width: 300px;
+}
+
+button {
+  background: #0084ff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 14px;
+  font-size: 15px;
+  color: #fff;
+}
+
+duplicates {
+  background-color: #fafafa;
+}
+
+clean {
+  background-color: #fafafa;
+}
+
+textarea {
+    width:400px;
+    
+}
