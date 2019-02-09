@@ -45,6 +45,11 @@ Execute desired container
 docker exec -it CONTAINER_ID bash
 ```
 
+Or if you are using visual Code with gitbash, on Settings, set Docker > Attach Shell Command: Linux Container to
+```
+bash -c "/bin/bash || /bin/sh"
+```
+and choose Attach Shell using Docker extension
 
 ## Execute Kafka via docker run with java
 
