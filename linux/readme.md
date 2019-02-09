@@ -134,5 +134,5 @@ docker build -t IMAGE_NAME .
 
 Run a container using custom image
 ```
-docker run -it --name container_name IMAGE_NAME
+docker run --rm -it -d --name container_name IMAGE_NAME
 ```
