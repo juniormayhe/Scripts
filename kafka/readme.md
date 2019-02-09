@@ -51,6 +51,13 @@ bash -c "/bin/bash || /bin/sh"
 ```
 and choose Attach Shell at Docker extension.
 
+
+## Saving container changes to a new image juniormayhe/kafka
+
+```
+docker commit container_id juniormayhe/kafka
+```
+
 ## Execute Kafka via docker run with java
 
 ```
