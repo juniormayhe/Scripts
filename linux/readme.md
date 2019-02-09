@@ -129,10 +129,10 @@ ADD ./code code #add your folder here
 
 Build a new custom image
 ```
-docker build -t custom_image_name .
+docker build -t IMAGE_NAME .
 ```
 
 Run a container using custom image
 ```
-docker run -d --name container_name custom_image_name
+docker run -it --name container_name IMAGE_NAME
 ```
