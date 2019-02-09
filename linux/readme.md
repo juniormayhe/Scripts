@@ -117,3 +117,22 @@ tag the imported image on target server
 docker tag IMAGEID company/mywebapp
 docker images
 ```
+
+### Build a custom CentOS image with custom files
+
+Create a Dockerfile
+
+```
+FROM centos:latest
+ADD ./code code #add your folder here
+```
+
+Build a new custom image
+```
+docker build -t custom_image_name .
+```
+
+Run a container using custom image
+```
+docker run -d --name container_name custom_image_name
+```
