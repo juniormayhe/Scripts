@@ -117,3 +117,55 @@ tag the imported image on target server
 docker tag IMAGEID company/mywebapp
 docker images
 ```
+
+## Create an image based on a running container
+
+
+Supposing you are already nunning a container 
+
+```
+docker run --rm -d --name kafka1 --network app-tier -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 -e KAFKA_LISTENERS=INSIDE://:9092,OUTSIDE://:9094 -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT -e KAFKA_INTER_BROKER_LISTENER_NAME=INSIDE -e KAFKA_LOG_DIRS=/opt/kafka/data/kafka -p 9092:9092 wurstmeister/kafka:latest
+eaadcd70d614a0395561a1b406846c866fac476c3b71e97bee3d3cd749eced82
+```
+
+and you have made changes in its filesystem (either created or modified files, etc)
+```
+docker exec -it ea bash
+bash-4.4# mkdir -p /opt/kafka/data/kafka
+bash-4.4# mkdir -p /opt/kafka/data/zookeeper
+bash-4.4# vi /opt/kafka/config/zookeeper.properties
+```
+
+and you need to generate a custom image with these modified files.
+Save current container state:
+```
+docker commit ea kafka_base
+sha256:f36f978f98e0f6921a92e09597487721614b666d8ba8a7607d5038813c4c75a9
+```
+
+Stop current container wurstmeister/kafka:latest
+```
+docker ps -a
+CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                                                      NAMES
+eaadcd70d614        wurstmeister/kafka:latest   "start-kafka.sh"         5 minutes ago       Up 5 minutes        0.0.0.0:9092->9092/tcp                                     kafka1
+5ad00e45011a        zookeeper:latest            "/docker-entrypoint.…"   About an hour ago   Up About an hour    0.0.0.0:2181->2181/tcp, 0.0.0.0:3888->3888/tcp, 2888/tcp   zookeeper
+
+docker stop ea
+```
+
+Start your saved image
+```
+docker run --rm -d --name kafka1 --network app-tier -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 -e KAFKA_LISTENERS=INSIDE://:9092,OUTSIDE://:9094 -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT -e KAFKA_INTER_BROKER_LISTENER_NAME=INSIDE -e KAFKA_LOG_DIRS=/opt/kafka/data/kafka -p 9092:9092 kafka_base
+5fc08672fc7587929616959e310852acd14dde5dd6a86e01bd0e46089f61e624
+```
+
+Check if your modifications done in container are still there
+```
+docker exec -it 5f bash
+bash-4.4# cat /opt/kafka/config/server.properties | grep log.dirs
+log.dirs=/opt/kafka/data/kafka
+bash-4.4# cat /opt/kafka/config/zookeeper.properties | grep dataDir
+dataDir=/opt/kafka/data/zookeeper
+bash-4.4# ls /opt/kafka/data/
+kafka      zookeeper
+```
