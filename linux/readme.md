@@ -169,3 +169,9 @@ dataDir=/opt/kafka/data/zookeeper
 bash-4.4# ls /opt/kafka/data/
 kafka      zookeeper
 ```
+
+save your changes done in running container at any time
+
+```
+docker commit -m "fixing init script" -a "Junior" container_Id kafka_base
+```
