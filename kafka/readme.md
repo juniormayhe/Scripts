@@ -214,8 +214,9 @@ docker run --rm -d --name zookeeper --network app-tier -p 2181:2181 -p 3888:3888
 
 docker run --name kafka1 --network app-tier -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 -e KAFKA_LISTENERS=INSIDE://:9092,OUTSIDE://:9094 -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT -e KAFKA_INTER_BROKER_LISTENER_NAME=INSIDE -e KAFKA_LOG_DIRS=/opt/kafka/data/kafka -e KAFKA_ADVERTISED_LISTENERS=INSIDE://localhost:9092,OUTSIDE://localhost:9094 -p 9092:9092 -p 9094:9094 wurstmeister/kafka
 ```
-
+Enter kafka docker and start consumer
 ```
+docker exec -it containerId bash
 kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic --group my-third-application
 ```
 
