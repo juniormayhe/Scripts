@@ -98,7 +98,7 @@ docker network create app-tier --driver bridge
 
 docker run --rm -d --name zookeeper --network app-tier -p 2181:2181 -p 3888:3888 zookeeper:latest
 
-docker run --rm -d --name kafka1 --network app-tier -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 -e KAFKA_LISTENERS=INSIDE://:9092,OUTSIDE://:9094 -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT -e KAFKA_INTER_BROKER_LISTENER_NAME=INSIDE -e KAFKA_LOG_DIRS=/opt/kafka/data/kafka -p 9092:9092 kafka_base
+docker run --rm -d --name kafka1 --network app-tier -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 -e KAFKA_LISTENERS=INSIDE://:9092,OUTSIDE://:9094 -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT -e KAFKA_INTER_BROKER_LISTENER_NAME=INSIDE -e KAFKA_LOG_DIRS=/opt/kafka/data/kafka -p 9092:9092 wurstmeister/kafka
 ```
 
 ### Create, list and delete topics
@@ -183,6 +183,92 @@ first_topic     1          3               6               3               -    
 first_topic     2          5               8               3               -               -               -
 ```
 
+### Reset offset for consumers
+
+To read again older messages, you can reset offset position of a topic
+```
+kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group my-first-application
+--reset-offsets --to-earliest --execute --topic first_topic
+```
+
+then you can consume all messages from beginning (offset 0). And LAG will be 0 when  describing a consumer.
+
+```
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic --group my-first-application
+```
+
+### Send and Receive messages with key pair values
+
+```
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic --property print.key=true --property key.separator=, --group my-first-application
+
+kafka-console-producer.sh --broker-list localhost:9092 --topic first_topic --property parse.key=true --property key.separator=,
+```
+
+
+### Send messages from windows host producer to kafka consumer within a container 
+
+```
+docker run --rm -d --name zookeeper --network app-tier -p 2181:2181 -p 3888:3888 zookeeper:latest
+
+docker run --name kafka1 --network app-tier -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 -e KAFKA_LISTENERS=INSIDE://:9092,OUTSIDE://:9094 -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT -e KAFKA_INTER_BROKER_LISTENER_NAME=INSIDE -e KAFKA_LOG_DIRS=/opt/kafka/data/kafka -e KAFKA_ADVERTISED_LISTENERS=INSIDE://localhost:9092,OUTSIDE://localhost:9094 -p 9092:9092 -p 9094:9094 wurstmeister/kafka
+```
+
+```
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic --group my-third-application
+```
+
+
+```
+package com.github.juniormayhe.kafka.tutorial1;
+
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringSerializer;
+
+import java.util.Properties;
+
+public class ProducerDemo {
+    public static void main(String[] args) {
+        System.out.println("Producer demo");
+
+        String bootstrapServers = "127.0.0.1:9092";
+        String keyName = StringSerializer.class.getName();
+        String keyValue =  StringSerializer.class.getName();
+
+
+        // create producer properties according to https://kafka.apache.org/documentation/#producerconfigs
+        Properties properties = new Properties();
+
+        /*
+        Old way of setting properties, hardcoding them
+        properties.setProperty("bootstrap.servers", bootstrapServers);
+        properties.setProperty("key.serializer", keyName);
+        properties.setProperty("value.serializer", keyValue); //kafka will convert whatever we sent to bytes
+        */
+        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, keyName);
+        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, keyValue);
+
+        // create the producer. The key and the value will be a string because we are producing strings not objects
+        KafkaProducer<String, String> producer = new KafkaProducer<String, String>(properties);
+
+        // create a producer record passing a topic and a value to topic
+        ProducerRecord<String, String> record = new ProducerRecord<String, String>("first_topic", "hello world");
+
+        // send data to consumers asynchronous
+        producer.send(record);
+
+        // wait data to be produced
+        producer.flush();
+        producer.close();
+
+    }
+}
+```
+
+
 
 ## Troubleshotting
 
@@ -208,13 +294,10 @@ vi /usr/bin/start-kafka.sh
 
 Add these commands to add at the end of start-kafka.sh:
 ```
-##maybe we do not need to start zookeeper-srever within kafka container...
-nohup exec "$KAFKA_HOME/bin/zookeeper-server-start.sh" "$KAFKA_HOME/config/zookeeper.properties" &>/dev/null &
-
 exec "$KAFKA_HOME/bin/kafka-server-start.sh" "$KAFKA_HOME/config/server.properties"
 ```
 
-Commit changes and run again kafka_base
+If you want another image, you can commit changes to another image named kafka_base and docker run this one to create a container
 ```
 docker commit -m "fixing init script" -a "Junior" 29 kafka_base
 ```
