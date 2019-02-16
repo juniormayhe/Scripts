@@ -219,7 +219,7 @@ docker run --name kafka1 --network app-tier -e KAFKA_ZOOKEEPER_CONNECT=zookeeper
 kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic --group my-third-application
 ```
 
-
+Java sample
 ```
 package com.github.juniormayhe.kafka.tutorial1;
 
@@ -269,7 +269,42 @@ public class ProducerDemo {
 }
 ```
 
+Maven dependency resolver (pom.xml)
 
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.github.juniormayhe</groupId>
+    <artifactId>kafka-beginners-course</artifactId>
+    <version>1.0</version>
+
+    <!-- dependencies found at https://mvnrepository.com/artifact/org.apache.kafka -->
+    <dependencies>
+        <!-- kafka clients: https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients/2.0.0-->
+
+        <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+
+        <!-- slf4j logger api needs slf4j simple binding: https://mvnrepository.com/artifact/org.slf4j/slf4j-simple/1.7.25-->
+
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.25</version>
+            <!--<scope>test</scope>-->
+        </dependency>
+    </dependencies>
+</project>
+```
 
 ## Troubleshotting
 
