@@ -26,7 +26,7 @@ docker network create app-tier --driver bridge
 ```
 docker run --rm -d --name zookeeper --network app-tier -p 2181:2181 -p 3888:3888 zookeeper:latest
 
-docker run --rm -d --name kafka1 --network app-tier -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 -e KAFKA_LISTENERS=INSIDE://:9092,OUTSIDE://:9094 -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT -e KAFKA_INTER_BROKER_LISTENER_NAME=INSIDE -p 9092:9092 wurstmeister/kafka:latest
+docker run --name kafka1 --network app-tier -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 -e KAFKA_LISTENERS=INSIDE://:9092,OUTSIDE://:9094 -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT -e KAFKA_INTER_BROKER_LISTENER_NAME=INSIDE -e KAFKA_LOG_DIRS=/opt/kafka/data/kafka -e KAFKA_ADVERTISED_LISTENERS=INSIDE://localhost:9092,OUTSIDE://localhost:9094 -p 9092:9092 -p 9094:9094 wurstmeister/kafka
 ```
 Those arguments you enter for running kafka container above will override defaults defined in /usr/bin/start-kafka.sh
 
@@ -214,13 +214,21 @@ docker run --rm -d --name zookeeper --network app-tier -p 2181:2181 -p 3888:3888
 
 docker run --name kafka1 --network app-tier -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 -e KAFKA_LISTENERS=INSIDE://:9092,OUTSIDE://:9094 -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT -e KAFKA_INTER_BROKER_LISTENER_NAME=INSIDE -e KAFKA_LOG_DIRS=/opt/kafka/data/kafka -e KAFKA_ADVERTISED_LISTENERS=INSIDE://localhost:9092,OUTSIDE://localhost:9094 -p 9092:9092 -p 9094:9094 wurstmeister/kafka
 ```
-Enter kafka docker and start consumer
+
+Run zookeeper server in kafka (mandatory?)
 ```
 docker exec -it containerId bash
+zookeeper-server-start.sh /opt/kafka/config/zookeeper.properties
+```
+
+Enter kafka docker, crate a topic and start consumer
+```
+kafka-topics.sh --zookeeper zookeeper:2181 --topic first_topic --create --partitions 3 --replication-factor 1
+
 kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic --group my-third-application
 ```
 
-Java sample
+Producer Java sample
 ```
 package com.github.juniormayhe.kafka.tutorial1;
 
@@ -354,3 +362,5 @@ docker exec -it containerId bash
 
 $ kafka-topics.sh --zookeeper 127.0.0.1:2181 --topic first_topic --create --partitions 3 --replication-factor 1
 ```
+ 
+ 
