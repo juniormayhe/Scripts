@@ -28,6 +28,7 @@ docker run --rm -d --name zookeeper --network app-tier -p 2181:2181 -p 3888:3888
 
 docker run --rm -d --name kafka1 --network app-tier -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 -e KAFKA_LISTENERS=INSIDE://:9092,OUTSIDE://:9094 -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT -e KAFKA_INTER_BROKER_LISTENER_NAME=INSIDE -p 9092:9092 wurstmeister/kafka:latest
 ```
+Those arguments you enter for running kafka container above will override defaults defined in /usr/bin/start-kafka.sh
 
 More on environment variables: https://hub.docker.com/r/wurstmeister/kafka/
 
