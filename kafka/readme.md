@@ -7,7 +7,7 @@ On Windows ensure Hyper V is installed and **Hyper-V Virtual Machine Management*
 Switch to Linux Containers on Docker.
 
 
-## Pull official immages
+## Pull official images
 
 ```
 docker pull zookeeper
@@ -31,6 +31,11 @@ docker run --name kafka1 --network app-tier -e KAFKA_ZOOKEEPER_CONNECT=zookeeper
 Those arguments you enter for running kafka container above will override defaults defined in /usr/bin/start-kafka.sh
 
 More on environment variables: https://hub.docker.com/r/wurstmeister/kafka/
+
+You can also use combined 3rd party images
+```
+docker run --rm -d --name kafkazookeeper -p 2181:2181 -p 9092:9092 -e ADVERTISED_HOST=127.0.0.1  -e NUM_PARTITIONS=10 johnnypark/kafka-zookeeper
+```
 
 ## Attaching shell to edit files within containers
 
