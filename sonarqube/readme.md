@@ -121,3 +121,12 @@ More on https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner
 ## Review sonarscanner analysis results
 
 Go to http://localhost:9000/projects to check your solution metrics
+
+
+## Integrate with Visual Studio 2019
+
+Install SonarLint Extension and reboot Visual studio
+Right click solution and choose Analyze -> Manage Sonarqube connections...
+In Team Explorer -> Sonarqube -> Connections -> localhost:9000 -> Right click MySample (the key of your project in sonarqube) and choose Bind and wait for the process to finish.
+
+Ref: https://devblogs.microsoft.com/devops/bind-a-visual-studio-solution-to-a-sonarqube-project-provisions-and-configures-roslyn-analyzers/
