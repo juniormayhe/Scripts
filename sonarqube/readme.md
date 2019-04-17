@@ -109,3 +109,7 @@ dotnet sonarscanner end
 ```
 
 More on https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild
+
+## Review sonarscanner analysis results
+
+Go to http://localhost:9000/projects to check your solution metrics
