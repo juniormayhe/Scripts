@@ -57,6 +57,12 @@ Go to sonarqube\ folder which contains docker-compose.yml then create and start 
 docker-compose up 
 ```
 
+or to run in background
+```
+docker-compose stop
+docker-compose up -d
+```
+
 Login as admin / admin at http://localhost:9000 and create a key for your project. Something as MySample
 
 ## Start analysis local dev environment
