@@ -2,7 +2,7 @@
 
 ![Docker Compose](logo.png?raw=true "")
 
-## Prepare a sonarqube on docker
+## Prepare a sonarqube with postgresql on docker
 Assuming you already have docker installed
 
 Create a local folder called sonarqube with the following docker-compose.yml:
