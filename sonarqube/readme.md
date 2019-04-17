@@ -83,8 +83,8 @@ If you have 401 error code in terminal / console while fetching package from pro
     <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
     
     <!--
-    <add key="proget dev" value="https://proget-fqdn/nuget/Farfetch-NuGet-DEV/" />
-    <add key="proget Live" value="https://proget-fqdn/nuget/Farfetch-NuGet-LIVE/" />
+    <add key="proget dev" value="https://proget-fqdn/nuget/Your-NuGet-DEV/" />
+    <add key="proget Live" value="https://proget-fqdn/nuget/Your-Farfetch-NuGet-LIVE/" />
     -->
 
     <add key="Microsoft Visual Studio Offline Packages" value="C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\" />
