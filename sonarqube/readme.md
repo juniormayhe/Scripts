@@ -1,4 +1,6 @@
-# Sonarqube installation
+# Sonarqube and postgresql installation
+
+![Docker Compose](logo.png?raw=true "")
 
 ## Prepare a sonarqube on docker
 Assuming you already have docker installed
