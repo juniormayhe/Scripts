@@ -1,28 +1,25 @@
 # Kafka in docker 
 
-## Windows
+## Quick run 3rd party image
+```
+docker run --rm -d --name kafkazookeeper -p 2181:2181 -p 9092:9092 -e ADVERTISED_HOST=127.0.0.1  -e NUM_PARTITIONS=10 johnnypark/kafka-zookeeper
+```
 
-On Windows ensure Hyper V is installed and **Hyper-V Virtual Machine Management** is running.
+## Run official images
 
-Switch to Linux Containers on Docker.
-
-
-## Pull official images
-
+### Pull kafka and zookeeper images
 ```
 docker pull zookeeper
 
 docker pull wurstmeister/kafka
 ```
 
-## Create a network for linux containers
-
+### Create a network for linux containers
 ```
 docker network create app-tier --driver bridge
 ```
 
-## Start images
-
+### Run official images
 ```
 docker run --rm -d --name zookeeper --network app-tier -p 2181:2181 -p 3888:3888 zookeeper:latest
 
@@ -31,11 +28,6 @@ docker run --name kafka1 --network app-tier -e KAFKA_ZOOKEEPER_CONNECT=zookeeper
 Those arguments you enter for running kafka container above will override defaults defined in /usr/bin/start-kafka.sh
 
 More on environment variables: https://hub.docker.com/r/wurstmeister/kafka/
-
-You can also use combined 3rd party images
-```
-docker run --rm -d --name kafkazookeeper -p 2181:2181 -p 9092:9092 -e ADVERTISED_HOST=127.0.0.1  -e NUM_PARTITIONS=10 johnnypark/kafka-zookeeper
-```
 
 ## Attaching shell to edit files within containers
 
@@ -369,3 +361,8 @@ $ kafka-topics.sh --zookeeper 127.0.0.1:2181 --topic first_topic --create --part
 ```
  
  
+## Windows requirements
+
+On Windows ensure Hyper V is installed and **Hyper-V Virtual Machine Management** is running.
+
+Switch to Linux Containers on Docker.
