@@ -16,7 +16,7 @@ deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
 
 ## Publishing docker image on Docker Hub
 
-Create an account at https://hub.docker.com/u/taxindividual/
+Create an account at https://hub.docker.com/u/company/
 
 Setup docker login at CLI
 ```
