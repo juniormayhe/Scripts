@@ -34,7 +34,6 @@ tar -tf mysite.tar.gz wordpress/wp-config-sample.php
 tar -tf mysite.tar.gz */readme.txt
 ```
 
-## Backup do banco com mysqldump 
 ## Uncompress tar files
 ```
 tar -xvpzf mysite.tar.gz -C /var/www/html/ --numeric-owner 
