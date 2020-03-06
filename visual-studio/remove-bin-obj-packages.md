@@ -12,4 +12,4 @@ Visual Studio > Tools > External tools
 - Title: `Remove .vs`
 - Command: `C:\Program Files\Git\git-bash.exe`
 - Arguments: `-c "find . -name .vs -type d -exec rm -rf {} +;"
-- Initial directory: `$(SolutionDir)`
+- Initial directory: `$(SolutionDir)/..`
