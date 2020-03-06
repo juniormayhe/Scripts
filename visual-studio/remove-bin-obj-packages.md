@@ -1,4 +1,4 @@
-Visual Studio :arrow_right: Tools :arrow_right: External tools
+Visual Studio > Tools > External tools
 
 ## Remove bin, obj and package folders
 
