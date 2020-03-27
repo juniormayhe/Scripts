@@ -312,6 +312,19 @@ Maven dependency resolver (pom.xml)
 </project>
 ```
 
+## Changing time to live of existing topic
+within container OS:
+```
+docker exec -it kafkazookeeper bash
+
+./opt/kafka_2.12-2.4.0/bin/kafka-configs.sh --zookeeper localhost:2181 --alter --entity-type topics --entity-name dev.ecom.routing-service.tracing-events-v1 --add-config retention.ms=5000
+```
+
+or directly from host OS:
+```
+docker exec -ti kafkazookeeper sh -c "./opt/kafka_2.12-2.4.0/bin/kafka-configs.sh --zookeeper localhost:2181 --alter --entity-type topics --entity-name dev.ecom.routing-service.tracing-events-v1 --add-config retention.ms=5000"
+```
+
 ## Troubleshotting
 
 ### Kafka is not running
