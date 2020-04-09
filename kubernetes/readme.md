@@ -35,8 +35,9 @@ kubectl proxy
 
 http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
 
-## Creating an alias for kubectl command and add to a known path such as C:\Users\%username%\AppData\Local\Microsoft\WindowsApps
-Create a batch / cmd file with
+## Creating an alias for kubectl command
+
+Create a batch / cmd file and save to a known path such as C:\Users\%username%\AppData\Local\Microsoft\WindowsApps
 ```
 @echo off
 doskey k=kubectl $*
