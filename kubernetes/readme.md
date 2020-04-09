@@ -37,7 +37,7 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 
 ## Creating an alias for kubectl command
 
-Create a batch / cmd file and save to a known path such as C:\Users\%username%\AppData\Local\Microsoft\WindowsApps
+Create a batch / cmd file and save to a known path such as `C:\Users\%username%\AppData\Local\Microsoft\WindowsApps`
 ```
 @echo off
 doskey k=kubectl $*
