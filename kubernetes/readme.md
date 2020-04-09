@@ -27,9 +27,22 @@ token:      eyJhbGciOiJSUzI1N.... << copy this
 ```
 
 4) Run the kubernetes proxy to host the dashboard ui
-
+```
 kubectl proxy
+```
 
 5) Visit the dashboard url and paste the token copied previously to proceed with login
 
 http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+
+## Creating an alias for kubectl command and add to a known path such as C:\Users\%username%\AppData\Local\Microsoft\WindowsApps
+Create a batch / cmd file with
+```
+@echo off
+doskey k=kubectl $*
+```
+And open a new command prompt to test the alias
+```
+k --help
+k get pods
+```
