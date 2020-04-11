@@ -163,3 +163,77 @@ kubectl delete pod my-nginx or
 kubectl delete -f nginx.pod.yml
 ```
 
+## Create a deployment with replicaset to handle the pods with container template
+Edit the deployment file
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata: # labels can be used for querying multiple resources
+  name: frontend # the name of deployment
+  labels:
+    app: my-nginx
+    tier: frontend # used to tie the deployment to the template
+spec:
+  replicas: 5
+  minReadySeconds: 10 # the pod wait the container start for 10 seconds to start receiving traffic
+  selector: # used to select the template to use
+    matchLabels:
+      tier: frontend # look down 
+  template: # template used to create the pod container (selector label matches the template label)
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+      - name: my-nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "128Mi" # 128 MB
+            cpu: "200m" #200 millicpu (.2 cpu / 20% of the cpu)
+        livenessProbe:
+          httpGet:
+            path: /index.html
+            port: 80
+          initialDelaySeconds: 15 # wait 15 seconds before first probe
+          timeoutSeconds: 2 # time to wait of 2 seconds for a response
+          periodSeconds: 2 # wait 2 seconds for next probe
+          failureThreshold: 1 # restart after 1 failed probe
+```
+
+## Create a deployment
+```
+kubectl create -f nginx-deployment.yaml
+```
+
+You can use apply, if the deployment must have been created preserving metadata version annotations with `kubectl create -f nginx-deployment.yaml --save-config`
+```
+kubectl apply -f nginx-deployment.yaml
+```
+
+## Get all deployment info and thei labels
+
+```
+kubectl get deployment --show-labels
+```
+
+## Get deployment info with a specific label
+```
+kubectl get deployment -l app=my-nginx
+```
+
+## Delete deployment
+```
+kubectl delete deployment deployname or kubectl delete deployment -f nginx-deployment.yaml
+```
+
+## Fast scale deployment pods and enter number of pods / 5 containers
+```
+kubectl scale deployment deployname --replicas=5 or kubectl scale deployment -f nginx-deployment.yaml --replicas=5
+```
+or add `replicas: 5` within `spec:` property then run to apply changes to deployment
+```
+kubectl apply -f nginx-deployment.yaml 
+```
