@@ -89,12 +89,44 @@ To permanent delete the pod deployment, enter the deployment name
 k delete deployment my-nginx
 ```
 
+## Create a pod using yaml
+Edit a nginx.pod.yml
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-nginx
+  labels: # labels allow deployments or labels to reference this kubernetes resource
+    app: ningx
+    rel: stable
+spec:
+  containers:
+  - name: my-nginx
+    image: nginx:alpine
+    ports:
+    - containerPort: 80 # this is overkill and not necessary but illustrates we can change port
+    livenessProbe: # used to determine if pod is healthy and running as expected and when to restart the container if needed, custom changes to the container are lost
+      httpGet: # http check action for index.html on port 80
+        path: /index.html
+        port: 80
+      initialDelaySeconds: 15 # wait 15 seconds before first liveness probe, so container can have time to start
+      timeoutSeconds: 2 # timeout after 2 seconds. Default timeout is 1 sec
+      periodSeconds: 5 # check every 5 seconds. Default period is 10 sec
+      failureThreshold: 1 # allow 1 failure before failing the pod and restart it (default behaviour). Default threshold is 3
+    readinessProbe: # when should traffic start being routed to this pod
+      httpGet:
+        path: /index.html
+        port: 80
+      initialDelaySeconds: 2 # wait 2 seconds for the pod to respond
+      periodSeconds: 5 # check every 5 seconds until app is up and running
+```
+
 ## Test pod creation with yaml
 ```
 kubectl create -f nginx.pod.yml --dry-run --validate=true
 ```
 
-## Create a pod using yaml
+## Create a pod
 ```
 kubectl create -f nginx.pod.yml
 ```
@@ -127,33 +159,7 @@ kubectl exec my-nginx -it sh
 ## Delete container
 since there is no deployment, a delete will permanente delete the pod by name or using YAML file that created it
 ```
-kubectl delete:
-# kubectl delete -f nginx.pod.yml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: my-nginx
-  labels: # labels allow deployments or labels to reference this kubernetes resource
-    app: ningx
-    rel: stable
-spec:
-  containers:
-  - name: my-nginx
-    image: nginx:alpine
-    ports:
-    - containerPort: 80 # this is overkill and not necessary but illustrates we can change port
-    livenessProbe: # used to determine if pod is healthy and running as expected and when to restart the container if needed, custom changes to the container are lost
-      httpGet: # http check action for index.html on port 80
-        path: /index.html
-        port: 80
-      initialDelaySeconds: 15 # wait 15 seconds before first liveness probe, so container can have time to start
-      timeoutSeconds: 2 # timeout after 2 seconds. Default timeout is 1 sec
-      periodSeconds: 5 # check every 5 seconds. Default period is 10 sec
-      failureThreshold: 1 # allow 1 failure before failing the pod and restart it (default behaviour). Default threshold is 3
-    readinessProbe: # when should traffic start being routed to this pod
-      httpGet:
-        path: /index.html
-        port: 80
-      initialDelaySeconds: 2 # wait 2 seconds for the pod to respond
-      periodSeconds: 5 # check every 5 seconds until app is up and running
+kubectl delete pod my-nginx or
+kubectl delete -f nginx.pod.yml
 ```
+
