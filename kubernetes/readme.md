@@ -35,7 +35,8 @@ kubectl proxy
 
 http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
 
-## Creating an alias for kubectl command
+## Pods
+### Creating an alias for kubectl command
 
 Create a batch / cmd file and save to a known path such as `C:\Users\%username%\AppData\Local\Microsoft\WindowsApps`
 ```
@@ -48,7 +49,7 @@ k --help
 k get pods
 ```
 
-## Creating pods
+### Creating pods
 
 To create a nginx pod with the podname my-nginx
 ```
@@ -89,7 +90,7 @@ To permanent delete the pod deployment, enter the deployment name
 k delete deployment my-nginx
 ```
 
-## Create a pod using yaml
+### Create a pod using yaml
 Edit a nginx.pod.yml
 ```
 apiVersion: v1
@@ -121,17 +122,17 @@ spec:
       periodSeconds: 5 # check every 5 seconds until app is up and running
 ```
 
-## Test pod creation with yaml
+### Test pod creation with yaml
 ```
 kubectl create -f nginx.pod.yml --dry-run --validate=true
 ```
 
-## Create a pod
+### Create a pod
 ```
 kubectl create -f nginx.pod.yml
 ```
 
-## Create a pod using yaml and add annotation about current yaml version
+### Create a pod using yaml and add annotation about current yaml version
 ```
 kubectl create -f nginx.pod.yml --save-config
 ```
@@ -141,29 +142,30 @@ kubectl apply -f nginx.pod.yml
 ```
 apply it will compare the new with current version and create a new pod up and running
 
-## Edit in live while running and save it using vi
+### Edit in live while running and save it using vi
 ```
 kubectl edit -f ngginx.pod.yml
 ```
 
-# Show events run about the pod, container and image used during creation
+### Show events run about the pod, container and image used during creation
 ```
 kubectl describe pod my-nginx
 ```
 
-## Enter the container s.o
+### Enter the container s.o
 ```
 kubectl exec my-nginx -it sh
 ```
 
-## Delete container
+### Delete container
 since there is no deployment, a delete will permanente delete the pod by name or using YAML file that created it
 ```
 kubectl delete pod my-nginx or
 kubectl delete -f nginx.pod.yml
 ```
 
-## Create a deployment with replicaset to handle the pods with container template
+## Deployments
+### Create a deployment with replicaset to handle the pods with container template
 Edit the deployment file
 ```
 apiVersion: apps/v1
@@ -203,7 +205,7 @@ spec:
           failureThreshold: 1 # restart after 1 failed probe
 ```
 
-## Create a deployment
+### Create a deployment
 ```
 kubectl create -f nginx-deployment.yaml
 ```
@@ -213,23 +215,23 @@ You can use apply, if the deployment must have been created preserving metadata 
 kubectl apply -f nginx-deployment.yaml
 ```
 
-## Get all deployment info and thei labels
+### Get all deployment info and thei labels
 
 ```
 kubectl get deployment --show-labels
 ```
 
-## Get deployment info with a specific label
+### Get deployment info with a specific label
 ```
 kubectl get deployment -l app=my-nginx
 ```
 
-## Delete deployment
+### Delete deployment
 ```
 kubectl delete deployment deployname or kubectl delete deployment -f nginx-deployment.yaml
 ```
 
-## Fast scale deployment pods and enter number of pods / 5 containers
+### Fast scale deployment pods and enter number of pods / 5 containers
 ```
 kubectl scale deployment deployname --replicas=5 or kubectl scale deployment -f nginx-deployment.yaml --replicas=5
 ```
