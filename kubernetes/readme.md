@@ -239,3 +239,47 @@ or add `replicas: 5` within `spec:` property then run to apply changes to deploy
 ```
 kubectl apply -f nginx-deployment.yaml 
 ```
+
+## Liveness probe
+
+### Create or update a pod if existing
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    test: liveness
+  name: liveness-exec
+spec:
+  containers:
+  - name: liveness
+    image: k8s.gcr.io/busybox
+    args: # command to be executed when container starts
+    - /bin/sh
+    - -c
+    - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 5 # during first 30 seconds there is a file and cat will return success, when removed, a failure
+    livenessProbe:
+      exec:
+        command: # in the first probe there will be a file within 30 seconds, and no errors
+                 # and after 35 seconds a nex probe is done but the file is gone, and error will show up and machine will be restarted
+                 # several restarts should happen or restarts only 3 times?
+        - cat
+        - /tmp/healthy
+      initialDelaySeconds: 5 # kubelet waits 5 seconds before first probe
+      periodSeconds: 5 # kubelet checks every 5 seconds
+      #failureThreshold: 3 is the defaut, after the 3rd liveness probe the container is restarted. Restarts happens repeatedly
+```
+```
+kubectl apply -f livenessprobe-execaction.yaml
+```
+
+Within 30 seconds, you see the file has been created
+```
+kubectl describe pod liveness-exec
+```
+
+or check restarts on realtime with 
+```
+kubectl get pod liveness-exec --watch
+```
