@@ -370,3 +370,24 @@ spec:
   ports:
   - port: 9000
 ```
+
+## Update service settings (assumes --save-config was using while creating pod)
+```
+kubectl apply -f file.service.yaml
+```
+
+## Delete service
+```
+kubectl delete -f file.service.yaml
+```
+
+## Testing if service is working
+```
+kubectl exec <pod-name> -- curl -s http://<podIp>
+```
+or for alpine you have to install curl into the pod to be testable
+```
+kubectl exec <pod-name> -it sh
+> apk add curl
+> curl -s http://<podIP>
+```
