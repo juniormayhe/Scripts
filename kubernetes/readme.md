@@ -341,7 +341,7 @@ spec:
     nodePort: 31000 # if not specified, assigns one automatically between 30000 - 32767
 ```
 
-A LoadBalancer service file
+A LoadBalancer service file is the standard way to expose a service to the internet. The service will have a single IP to forward all requests to the cluster. Any kind of traffic can be sent http, tcp, udp, grpc, etc.
 ```
 apiVersion: apps/v1
 kind: Service
