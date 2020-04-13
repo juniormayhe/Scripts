@@ -288,15 +288,15 @@ kubectl get pod liveness-exec --watch
 
 To access a pod from outside kubernetes, listening to 8080 externally and forwarding to internal 80 in pod
 ```
-kubectl port-forward pod <pod-name> 8080:80
+kubectl port-forward pod/<pod-name> 8080:80
 ```
 
 To access a deployment from outside kubernetes, listening to 8080 externally and forwarding to deployment´s pod
 ```
-kubectl port-forward deployment <deployment-name> 8080
+kubectl port-forward deployment/<deployment-name> 8080
 ```
 
 To access a service from outside kubernetes, listening to 8080 externally and forwarding to service´s pod
 ```
-kubectl port-forward service <service-name> 8080
+kubectl port-forward service/<service-name> 8080
 ```
