@@ -304,8 +304,8 @@ kubectl port-forward service/<service-name> 8080
 
 ## Services
 
-### Creating services
-Edit the service file
+### Creating  service
+A clusterIP service file
 ```
 apiVersion: apps/v1
 kind: Service
@@ -314,36 +314,30 @@ metadata: # labels can be used for querying multiple resources
   labels:
     app: nginx
 spec:
-  type: # ClusterIP (default), NodePort, LoadBalancer
+  type: ClusterIP # ClusterIP (default), NodePort, LoadBalancer
   selector: # used to select the pod template to use this service applies to
     app: nginx # service to apply to resources
   ports:
   - name: http
     port: 80 # service port
     targetPort: 80 # container target port
-  
-  
-  
-  template: # template used to create the pod container (selector label matches the template label)
-    metadata:
-      labels:
-        app: my-nginx
-    spec:
-      containers:
-      - name: my-nginx
-        image: nginx:alpine
-        ports:
-        - containerPort: 80
-        resources:
-          limits:
-            memory: "128Mi" # 128 MB
-            cpu: "200m" #200 millicpu (.2 cpu / 20% of the cpu)
-        livenessProbe:
-          httpGet:
-            path: /index.html
-            port: 80
-          initialDelaySeconds: 15 # wait 15 seconds before first probe
-          timeoutSeconds: 2 # time to wait of 2 seconds for a response
-          periodSeconds: 2 # wait 2 seconds for next probe
-          failureThreshold: 1 # restart after 1 failed probe
+```
+
+A NodePort service file
+```
+apiVersion: apps/v1
+kind: Service
+metadata: # labels can be used for querying multiple resources
+  name: nginx # the name of service and it gets a dns entry
+  labels:
+    app: nginx
+spec:
+  type: NodePort
+  selector: # used to select the pod template to use this service applies to
+    app: nginx # service to apply to resources
+  ports:
+  - name: http
+    port: 80 # service port
+    targetPort: 80 # container target port
+    nodePort: 31000 # if not specified, assigns one automatically between 30000 - 32767
 ```
