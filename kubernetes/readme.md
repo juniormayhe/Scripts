@@ -215,7 +215,7 @@ You can use apply, if the deployment must have been created preserving metadata 
 kubectl apply -f nginx-deployment.yaml
 ```
 
-### Get all deployment info and thei labels
+### Get all deployment info and their labels
 
 ```
 kubectl get deployment --show-labels
