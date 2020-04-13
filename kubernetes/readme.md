@@ -336,8 +336,37 @@ spec:
   selector: # used to select the pod template to use this service applies to
     app: nginx # service to apply to resources
   ports:
-  - name: http
-    port: 80 # service port
+  - port: 80 # service port
     targetPort: 80 # container target port
     nodePort: 31000 # if not specified, assigns one automatically between 30000 - 32767
+```
+
+A LoadBalancer service file
+```
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  type: LoadBalancer
+  selector:
+    app: nginx
+  ports:
+  - port: 80 # service port
+    targetPort: 80 # container target port
+```
+
+A ExternalName service file, allows pods to connect to external services
+```
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: external-service # other services can use this FQDN to access this external service
+spec:
+  type: ExternalName
+  externalName: api.acmecorp.com
+  ports:
+  - port: 9000
 ```
