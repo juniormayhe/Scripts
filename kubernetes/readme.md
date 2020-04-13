@@ -122,17 +122,17 @@ spec:
       periodSeconds: 5 # check every 5 seconds until app is up and running
 ```
 
-### Test pod creation with yaml
+Test pod creation with yaml
 ```
 kubectl create -f nginx.pod.yml --dry-run --validate=true
 ```
 
-### Create a pod
+Create a pod
 ```
 kubectl create -f nginx.pod.yml
 ```
 
-### Create a pod using yaml and add annotation about current yaml version
+Create a pod using yaml and add annotation about current yaml version
 ```
 kubectl create -f nginx.pod.yml --save-config
 ```
@@ -142,7 +142,7 @@ kubectl apply -f nginx.pod.yml
 ```
 apply it will compare the new with current version and create a new pod up and running
 
-### Edit in live while running and save it using vi
+Edit in live while running and save it using vi
 ```
 kubectl edit -f ngginx.pod.yml
 ```
@@ -205,7 +205,7 @@ spec:
           failureThreshold: 1 # restart after 1 failed probe
 ```
 
-### Create a deployment
+Create a deployment
 ```
 kubectl create -f nginx-deployment.yaml
 ```
@@ -215,13 +215,13 @@ You can use apply, if the deployment must have been created preserving metadata 
 kubectl apply -f nginx-deployment.yaml
 ```
 
-### Get all deployment info and their labels
+Get all deployment info and their labels
 
 ```
 kubectl get deployment --show-labels
 ```
 
-### Get deployment info with a specific label
+Get deployment info with a specific label
 ```
 kubectl get deployment -l app=my-nginx
 ```
@@ -300,4 +300,50 @@ kubectl port-forward deployment/<deployment-name> 8080:80 (if the pod internally
 To access a service from outside kubernetes, listening to 8080 externally and forwarding to service´s pod
 ```
 kubectl port-forward service/<service-name> 8080
+```
+
+## Services
+
+### Creating services
+Edit the service file
+```
+apiVersion: apps/v1
+kind: Service
+metadata: # labels can be used for querying multiple resources
+  name: nginx # the name of service and it gets a dns entry
+  labels:
+    app: nginx
+spec:
+  type: # ClusterIP (default), NodePort, LoadBalancer
+  selector: # used to select the pod template to use this service applies to
+    app: nginx # service to apply to resources
+  ports:
+  - name: http
+    port: 80 # service port
+    targetPort: 80 # container target port
+  
+  
+  
+  template: # template used to create the pod container (selector label matches the template label)
+    metadata:
+      labels:
+        app: my-nginx
+    spec:
+      containers:
+      - name: my-nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "128Mi" # 128 MB
+            cpu: "200m" #200 millicpu (.2 cpu / 20% of the cpu)
+        livenessProbe:
+          httpGet:
+            path: /index.html
+            port: 80
+          initialDelaySeconds: 15 # wait 15 seconds before first probe
+          timeoutSeconds: 2 # time to wait of 2 seconds for a response
+          periodSeconds: 2 # wait 2 seconds for next probe
+          failureThreshold: 1 # restart after 1 failed probe
 ```
