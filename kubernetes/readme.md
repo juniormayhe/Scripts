@@ -305,7 +305,7 @@ kubectl port-forward service/<service-name> 8080
 ## Services
 
 ### Creating  service
-A clusterIP service file
+A clusterIP service file. ClusterIP is a service where apps inside cluster can access. There is no external access. To access a ClusterIP from outside you need to run `kubectl proxy --port=<external port>`. This allow internal traffic to display internal dashboards or to debug a service. You should not use this to expose your service to internet or use as production service.
 ```
 apiVersion: apps/v1
 kind: Service
@@ -323,7 +323,7 @@ spec:
     targetPort: 80 # container target port
 ```
 
-A NodePort service file
+A NodePort service file opens a static port in nodes to receive external traffic and forward it to the service. You can have only one service per port. The port must be within a range 30000 - 32767. Node IP might change each time. You should not use for production environment and use it only for temporary app demos.
 ```
 apiVersion: apps/v1
 kind: Service
