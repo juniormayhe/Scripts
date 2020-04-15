@@ -391,3 +391,51 @@ kubectl exec <pod-name> -it sh
 > apk add curl
 > curl -s http://<podIP>
 ```
+
+## Volumes
+
+## Creating one pod with two containers that share a temporary volume (tied to pod lifecycle)
+
+Edit the file
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  volumes:
+  - name: html
+    emptyDir: {} # lifecycle tied to pod, containers share data through this empty directory
+
+  containers:
+  - name: nginx
+    image: nginx:alpine
+    volumeMounts:
+      - name: html
+        mountPath: /usr/share/nginx/html
+        readOnly: true
+
+  - name: html-updater
+    image: alpine
+    command: ["/bin/sh","-c"]
+    args:
+      - while true; do date >> /html/index.html; sleep 10; done
+    volumeMounts:
+      - name: html
+        mountPath: /html
+```
+
+Create the pod
+```
+kubectl create -f nginx.emptydir.pod.yaml --save-config
+```
+
+Preview html file changes in first container caused by second container
+```
+kubectl port-forward nginx 8282:80
+```
+
+Delete the pod will erase temporary volume and its containers
+```
+kubectl delete -f nginx.emptydir.pod.yaml
+```
