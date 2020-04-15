@@ -394,7 +394,7 @@ kubectl exec <pod-name> -it sh
 
 ## Volumes
 
-## Creating one pod with two containers that share a temporary volume (tied to pod lifecycle)
+### Creating one pod with two containers that share a temporary volume (tied to pod lifecycle)
 
 Edit the file
 ```
