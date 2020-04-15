@@ -394,7 +394,7 @@ kubectl exec <pod-name> -it sh
 
 ## Volumes
 
-### Creating one pod with two containers that share a temporary volume (tied to pod lifecycle)
+### EmptyDir: Creating one pod with two containers that share a temporary volume (tied to pod lifecycle)
 
 Edit the file
 ```
@@ -438,4 +438,35 @@ kubectl port-forward nginx 8282:80
 Delete the pod will erase temporary volume and its containers
 ```
 kubectl delete -f nginx.emptydir.pod.yaml
+```
+
+### HostPath: Creating one pod with two containers that share a temporary volume in worker node
+
+Edit the file
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hostpath-volume-pod
+spec:
+  containers:
+  - name: singlefiletest
+    image: nginx:alpine
+    volumeMounts:
+    - name: temporary-pod-folder
+      mountPath: /usr/share/nginx/html  
+
+  - name: html-updater
+    image: alpine
+    command: ["/bin/sh","-c"]
+    args:
+      - while true; do date >> /tmp/index.html; sleep 10; done
+    volumeMounts:
+      - name: temporary-pod-folder
+        mountPath: /tmp
+          
+  volumes:
+  - name: temporary-pod-folder
+    hostPath:
+      path: /etc
 ```
