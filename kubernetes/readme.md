@@ -470,3 +470,31 @@ spec:
     hostPath:
       path: /etc
 ```
+
+### HostPath: Creating one pod with one container that access docker daemon volume from host
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: docker-volume-pod
+spec:
+  containers:
+  - name: docker
+    image: docker
+    command: ["sleep"]
+    args: ["10000"]
+    volumeMounts:
+    - name: docker-sock
+      mountPath: /var/run/docker.sock
+  
+  volumes:
+  - name: docker-sock
+    hostPath:
+      path: /var/run/docker.sock # host docker daemon where you can access internals 
+      type: Socket
+```
+
+Access host´s docker daemon from container
+```
+kubectl exec -it docker-volume-pod sh
+```
