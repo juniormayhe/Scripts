@@ -440,7 +440,7 @@ Delete the pod will erase temporary volume and its containers
 kubectl delete -f nginx.emptydir.pod.yaml
 ```
 
-### HostPath: Creating one pod with two containers that share a temporary volume in worker node
+### HostPath: Creating one pod with two containers that share a temporary volume in node / host
 
 Edit the file
 ```
