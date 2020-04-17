@@ -502,5 +502,8 @@ kubectl exec -it docker-volume-pod sh
 ### PersistentVolume: Creating storage for a nginx. Persistent claim and persitent volume are defined manually / statically by developer or network administrator.
 
 
-### StorageClass: Creating dynamic storage for a nginx. Persistent claim and persitent volume do not need to be defined manually / statically by developer or network administrator, since they are created automatically for the pod.
+### StorageClass: Creating dynamic storage for a nginx. Persistent volume claim needs to be set by developer or admin, but persistent volume is created auomatically for the pod (it does not need to be defined manually / statically by developer or network administrator).
 
+1) Create a storage class template:
+
+2) Create a persistent volume claim pointing to storage class
