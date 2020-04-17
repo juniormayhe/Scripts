@@ -498,3 +498,9 @@ Access host´s docker daemon from container
 ```
 kubectl exec -it docker-volume-pod sh
 ```
+
+### PersistentVolume: Creating storage for a nginx. Persistent claim and persitent volume are defined manually / statically by developer or network administrator.
+
+
+### StorageClass: Creating dynamic storage for a nginx. Persistent claim and persitent volume do not need to be defined manually / statically by developer or network administrator, since they are created automatically for the pod.
+
