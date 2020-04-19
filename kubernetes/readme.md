@@ -710,3 +710,9 @@ data: # no file name here
   url.payments=paypal.com
 ```
 
+#### Create config map using inline values
+
+```
+kubectl create configMap <name> --from-literal=url=google.com --from-literal=url.payments=paypal.com
+```
+
