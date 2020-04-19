@@ -752,4 +752,25 @@ spec:
         name: app-settings # the name defined in ConfigMap metadata.name
 ```
 
+#### define volume from where configmap will be loaded in pod container or deployment
+
+```
+spec:
+  volumes:
+    - name: app-config-vol
+      configMap:
+        name: app-settings
+        
+  containers: 
+    volumeMounts:
+      - name: app-config-vol
+        mountPath: /etc/config
+    ...
+  env:
+  - name: GOOGLE_URL # environment variable name
+    valueFrom:
+      configMapKeyRef:
+        name: app-settings # the name defined in ConfigMap metadata.name
+  
+```
 
