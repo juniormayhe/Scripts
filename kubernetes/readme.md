@@ -754,16 +754,17 @@ spec:
 
 #### define volume from where configmap will be loaded in pod container or deployment
 
+It will create a volume with a file for each configurationd defined in configmap.
 ```
 spec:
   volumes:
-    - name: app-config-vol
+    - name: app-config-vol # name of the volume to have a file for each seting
       configMap:
         name: app-settings
         
   containers: 
     volumeMounts:
-      - name: app-config-vol
+      - name: app-config-vol # hook to the volume name
         mountPath: /etc/config
     ...
   env:
