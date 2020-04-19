@@ -746,7 +746,7 @@ spec:
 spec:
   containers: ...
   env:
-  - name: GOOGLE_URL # environment variable name
+  - name: GOOGLE_URL # environment variable name, exposed to your application in container
     valueFrom:
       configMapKeyRef:
         name: app-settings # the name defined in ConfigMap metadata.name
