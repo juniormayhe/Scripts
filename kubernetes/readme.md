@@ -745,11 +745,9 @@ spec:
 ```
 spec:
   containers: ...
-  env:
-  - name: GOOGLE_URL # environment variable name, exposed to your application in container
-    valueFrom:
-      configMapKeyRef:
-        name: app-settings # the name defined in ConfigMap metadata.name
+  envFrom:
+  - configMapKeyRef:
+      name: app-settings # the name defined in ConfigMap metadata.name
 ```
 
 #### define volume from where configmap will be loaded in pod container or deployment
