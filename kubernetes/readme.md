@@ -727,7 +727,7 @@ kubectl create configMap <name> --from-literal=url=google.com --from-literal=url
 kubectl get cm <name> -o yaml
 ```
 
-#### Inject setting in pod or deployment
+#### Inject a specific setting into pod or deployment
 
 ```
 spec:
@@ -739,4 +739,17 @@ spec:
         key: app-settings # the name defined in ConfigMap metadata.name
         name: url # the variable name defined in data: block in ConfigMap
 ```
+
+#### Inject ALL settings into pod or deployment
+
+```
+spec:
+  containers: ...
+  env:
+  - name: GOOGLE_URL # environment variable name
+    valueFrom:
+      configMapKeyRef:
+        name: app-settings # the name defined in ConfigMap metadata.name
+```
+
 
