@@ -673,6 +673,10 @@ spec:
 
 ### ConfigMaps: create common configuration to be injected in different nodes
 
+#### Create config map using data from config file
+```
+kubectl create configMap -f my.yaml
+```
 
 #### Create config map using data from config file
 ```
@@ -705,6 +709,8 @@ creates a configuration where data property has no filename:
 ```
 apiVersion: v1
 kind: ConfigMap
+metadata:
+  name: app-settings
 data: # no file name here
   url=google.com
   url.payments=paypal.com
@@ -714,5 +720,23 @@ data: # no file name here
 
 ```
 kubectl create configMap <name> --from-literal=url=google.com --from-literal=url.payments=paypal.com
+```
+
+#### Get config map
+```
+kubectl get cm <name> -o yaml
+```
+
+#### Inject setting in pod or deployment
+
+```
+spec:
+  containers: ...
+  env:
+  - name: GOOGLE_URL # environment variable name
+    valueFrom:
+      configMapKeyRef:
+        key: app-settings # the name defined in ConfigMap metadata.name
+        name: url # the variable name defined in data: block in ConfigMap
 ```
 
