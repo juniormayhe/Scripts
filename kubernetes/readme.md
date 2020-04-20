@@ -802,6 +802,19 @@ data:
   <variable1>: base64string
   <variable2>: base64string
 ```
+Set pod to use secret
+```
+apiVersion: apps/v1
+kind: Pod / Deployment
+spec:
+  containers: ...
+  env:
+  - name: MY_EXPOSED_VARIABLE
+    valueFrom:
+      secretKeyRef:
+        name: <secret name>
+        key: <variable1>
+```
 
 Get all secrets
 ```
