@@ -790,6 +790,19 @@ Create secret with tls certificates
 kubectl create secret tls <secret name> --cert=<path/to/tls.cert> --key=<path/to/tls.key>
 ```
 
+Create secret with yaml: all values must be base64 encoded
+```
+kubectl create secret generic <secret name> --f=<path/to/file.yaml>
+apiVersion: v1
+kind: Secret
+metadata:
+  name: <secret name>
+type: Opaque
+data:
+  <variable1>: base64string
+  <variable2>: base64string
+```
+
 Get all secrets
 ```
 kubectl get secrets
