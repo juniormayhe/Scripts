@@ -802,7 +802,8 @@ data:
   <variable1>: base64string
   <variable2>: base64string
 ```
-Set pod to use secret
+
+Set pod to access secret through environment vars
 ```
 apiVersion: apps/v1
 kind: Pod / Deployment
@@ -814,6 +815,23 @@ spec:
       secretKeyRef:
         name: <secret name>
         key: <variable1>
+```
+
+
+Set pod to access secret through files in a volume
+```
+apiVersion: apps/v1
+kind: Pod / Deployment
+spec:
+  volumes:
+    - name: my-secret-volume
+      secret:
+        secretName: <secret name> #each setting from this secret will be a single file
+  containers:
+    volumeMounts:
+      - name: my-secret-volume
+        mountPath: /path/to/secretfiles # folder to have all single files for each secret
+        readOnly: true
 ```
 
 Get all secrets
