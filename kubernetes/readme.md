@@ -773,3 +773,29 @@ spec:
   
 ```
 
+#### Secrets
+
+Create secret to be securely stored in kubernetes
+```
+kubectl create secret generic <secret name> --from-literal=<variable>=<value>
+```
+
+Create secret to be securely stored in kubernetes from a file
+```
+kubectl create secret generic <secret name> --from-file=<variable>=<path/to/file>
+```
+
+Create secret with tls certificates
+```
+kubectl create secret tls <secret name> --cert=<path/to/tls.cert> --key=<path/to/tls.key>
+```
+
+Get all secrets
+```
+kubectl get secrets
+```
+
+Get secret by name
+```
+kubectl get secrets <secret name> -o yaml
+```
