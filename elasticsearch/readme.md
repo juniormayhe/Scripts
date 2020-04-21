@@ -1,4 +1,8 @@
-# Contains
+# Elasticsearch
+
+Filters for kibana dashboard:
+
+## Contains
 
 Field `my-message` contains a the string `Failed` value
 ```
@@ -15,7 +19,7 @@ Field `my-message` contains a the string `Failed` value
 }
 ```
 
-# Starts with
+## Starts with
 
 Field `my-message` starts with `MyCompany.API`
 ```
