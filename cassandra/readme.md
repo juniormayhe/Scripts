@@ -44,6 +44,8 @@ CREATE ROLE IF NOT EXISTS rolename WITH PASSWORD = '1234' AND LOGIN = true AND S
 GRANT SELECT ON ALL KEYSPACES TO rolename;
 GRANT MODIFY ON ALL KEYSPACES TO rolename;
 ```
+Ref: https://www.dbrnd.com/2016/05/nosql-org-apache-cassandra-auth-cassandrarolemanager-doesnt-support-password/
+Ref: https://www.dbrnd.com/2016/05/nosql-cassandra-introduces-role-based-authentication/
 
 ## Create user defined type
 ```
