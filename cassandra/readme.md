@@ -15,6 +15,7 @@ authenticator: PasswordAuthenticator
 ##enable grant to role
 authorizer: org.apache.cassandra.auth.CassandraAuthorizer
 ```
+then restart `DataStax Cassandra Community Server 3.0.9` in Windows Services or, `sudo service cassandra restart` in Linux
 
 ## To import CQL script (if you have python 2.7 and csqlsh installed)
 ```
