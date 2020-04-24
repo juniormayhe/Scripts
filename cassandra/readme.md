@@ -29,7 +29,7 @@ compression: snappy
 
 ## Create database
 ```
-CREATE KEYSPACE database_name wITH replication = {'class': 'SimpleStrategy', 'replication_factor' : '1'};
+CREATE KEYSPACE database_name WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : '1'};
 ```
 
 ## Create user if does not existin in Cassandra
