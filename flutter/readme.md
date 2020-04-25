@@ -75,3 +75,9 @@ Doctor summary (to see all details, run flutter doctor -v):
 
 ! Doctor found issues in 1 category.
 ```
+
+## Configure android device manager
+
+Create a new flutter app with the default values. Go to AVD Manager (Android Virtual Device Manager) icon.
+
+Download x86 image to create the vm. This might take several minutes. :-/
