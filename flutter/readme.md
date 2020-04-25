@@ -36,6 +36,11 @@ Doctor summary (to see all details, run flutter doctor -v):
 
 We must install the flutter and dart plugins in Android Studio.
 
-In Welcome Android Studio of the installer, select Configure > Settings.
-Then in the left panel, under Editor > Plugins > Browse repositories. 
-Then enter Flutter (Languages) and click in the Install button. This will install flutter and dart plugins.
+In Welcome Android Studio, select Configure > Settings.
+Then in the left panel, under Plugins > Browse repositories. 
+Then enter Flutter (flutter.dev) and click in the Install button. This will install flutter and dart plugins.
+
+Then restart android studio to reflect changes.
+
+When opening the Welcome screen again, a new item will show up, called
+**Start a new Flutter project**
