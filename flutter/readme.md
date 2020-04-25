@@ -83,3 +83,9 @@ Create a new flutter app with the default values. Go to AVD Manager (Android Vir
 Download x86 image to create the vm. This might take several minutes. :-/
 
 Change the vm configuration, in *Emulated performance*, select Hardware GLES 2.0 if you have a graphic card for faster rendering.
+
+Click on the play button to start the vm for the virtual device.
+
+## Lauch the app
+
+In Android Studio top bar select the Android SDK built then click on Play button to lauch the flutter app.
