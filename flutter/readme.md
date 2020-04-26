@@ -135,5 +135,7 @@ To generate app icon for an original of 1024x1024 px, you can go to https://appi
 - copy the android generated mipmap folders to testing_app\android\app\src\main\res\
 - delete the iOS folder \testing_app\ios\Runner\Assets.xcassets\AppIcon.appiconset
 - copy the iOS generated folder to \testing_app\ios\Runner\Assets.xcassets\AppIcon.appiconset
+- replace the \testing_app\android\app\src\main for change the playstore icon
 
-
+To make icon fit within circle boundaries for Android, under Project, you must right click on testing_app\android\app\src\main\res to create a New > Image Asset. Under Source Asset > Path, select the original icon image.
+In Scaling > Resize, select the desired size and click Next. And click finish.
