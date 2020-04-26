@@ -89,3 +89,44 @@ Click on the play button to start the vm for the virtual device.
 ## Lauch the app
 
 In Android Studio top bar select the Android SDK built then click on Play button to lauch the flutter app.
+
+## Basic flutter app
+
+Scaffold class can be used to create a basic flutter app. Under projects add a new folder called images and drop into that the images you want to pack in the app.
+
+Edit the pubspec.yaml to tell where to pick asset images:
+```
+flutter:
+  ...
+  # you can name the specific image file or use all images by adding only "foldername/"
+  assets:
+    - images/
+```
+
+Edit main.dart to use a Scaffold class to show the image:
+
+```
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(
+    MaterialApp(
+      home: Scaffold(
+        backgroundColor: Colors.deepPurple[100],
+        appBar: AppBar(
+          title: Text(
+            'I am Rich',
+          ),
+          backgroundColor: Colors.deepPurple[600],
+        ),
+        body: Center(
+          child: Image(
+            image: AssetImage('images/diamond.png'),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+```
+
