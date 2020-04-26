@@ -142,4 +142,4 @@ In Scaling > Resize, select the desired size and click Next. And click finish.
 
 ### Resources
 
-Free vector images https://icons8.com/ouch
+Free vector images https://icons8.com/ouch, https://www.vecteezy.com/, https://www.canva.com/
