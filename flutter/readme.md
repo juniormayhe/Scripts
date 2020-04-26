@@ -139,3 +139,7 @@ To generate app icon for an original of 1024x1024 px, you can go to https://appi
 
 To make icon fit within circle boundaries for Android, under Project, you must right click on testing_app\android\app\src\main\res to create a New > Image Asset. Under Source Asset > Path, select the original icon image.
 In Scaling > Resize, select the desired size and click Next. And click finish.
+
+### Resources
+
+Free vector images https://icons8.com/ouch
