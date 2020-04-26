@@ -129,4 +129,11 @@ void main() {
   );
 }
 ```
+To generate app icon for an original of 1024x1024 px, you can go to https://appicon.co/ then
+
+- delete the Android folders in testing_app\android\app\src\main\res\mipmap*
+- copy the android generated folders to testing_app\android\app\src\main\res\
+- delete the iOS folders \testing_app\ios\Runner\Assets.xcassets 
+- copy the iOS generated folder to \testing_app\ios\Runner\Assets.xcassets 
+
 
