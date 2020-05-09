@@ -63,3 +63,7 @@ nasm -felf64 hello.asm && gcc hello.o && ./a.out
 nasm -felf64 hello.asm && ld -o hello hello.o && chmod u+x hello
 ./hello
 ```
+
+# References
+
+https://cs.lmu.edu/~ray/notes/nasmtutorial/
