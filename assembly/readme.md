@@ -1,5 +1,7 @@
 # Developing assembly in Windows
 
+## 32 bits
+
 Create a teste32.asm to print message using x86 registers
 ```asm
 extern _printf
@@ -25,7 +27,7 @@ Compile asm to 32bits object
 nasm -f win32 c:\Proyectos\assembly\teste32.asm
 ```
 
-Use Visual studio linker (link.exe) to build executable. Desktop development with C++ must be installed.
+Build to 32 bits executable
 ```
 c:\MinGW\bin>ld -Lc:\MinGW\lib\gcc\mingw32\6.3.0 -Lc:\MinGW\lib -o C:\Proyectos\assembly\teste32.exe C:\Proyectos\assembly\teste32.obj -lmingw32 -lgcc -lgcc_eh -lmoldname -lmingwex -lmsvcrt -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lgcc_eh -lmoldname -lmingwex -lmsvcrt
 ```
@@ -33,6 +35,39 @@ c:\MinGW\bin>ld -Lc:\MinGW\lib\gcc\mingw32\6.3.0 -Lc:\MinGW\lib -o C:\Proyectos\
 Run from command prompt
 ```
 teste32.exe
+```
+
+## 64 bits
+
+```asm
+; ----------------------------------------------------------------------------------------
+; This is a Win64 console program that writes "Hello" on one line and then exits.  It
+; uses puts from the C library.
+; ----------------------------------------------------------------------------------------
+        extern  puts
+
+        global  main
+
+        section .text
+main:
+        sub     rsp, 28h                        ; Reserve the shadow space
+        mov     rcx, message                    ; First argument is address of message
+        call    puts                            ; puts(message)
+        add     rsp, 28h                        ; Remove shadow space
+        ret
+message:
+        db      'Hello', 0                      ; C strings need a zero byte at the end
+```
+
+Compile to 64 bits object
+```
+nasm -fwin64 teste64.asm 
+```
+
+Build to 64 bits executable
+```
+C:\MinGW64\bin>gcc -m64 -B c:\MinGW64\bin c:\temp\teste64.obj -o c:\temp\teste64.exe
+teste64.exe
 ```
 
 # Developing for Linux
@@ -59,8 +94,8 @@ msg:      db        "Hello, World!", 10      ; note the newline at the end with 
 
 ## Compile it to linux 64bits object
 ```
-nasm -felf64 hello.asm && gcc hello.o && ./a.out
-nasm -felf64 hello.asm && ld -o hello hello.o && chmod u+x hello
+nasm -f elf64 hello.asm && gcc hello.o && ./hello
+nasm -f elf64 hello.asm && ld -o hello hello.o && chmod u+x hello
 ./hello
 ```
 
