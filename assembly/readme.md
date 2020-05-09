@@ -37,13 +37,13 @@ teste32.exe
 
 # Developing for Linux
 
-Install packages
+## Install packages
 
 Ubuntu, Debian: $ sudo apt-get install gcc make nasm
 Fedora: $ sudo dnf install gcc make nasm
 CentOS, RHEL: $ sudo yum install gcc make nasm
 
-Create the file
+## Create the file
 ```asm
 default rel
 
@@ -57,7 +57,7 @@ hello:    lea       rax, [rel msg]
 msg:      db        "Hello, World!", 10      ; note the newline at the end with 10
 ```
 
-Compile it to linux 64bits object
+## Compile it to linux 64bits object
 ```
 nasm -felf64 hello.asm && gcc hello.o && ./a.out
 nasm -felf64 hello.asm && ld -o hello hello.o && chmod u+x hello
