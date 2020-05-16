@@ -65,6 +65,15 @@ nasm -fwin64 teste64.asm
 ```
 
 Build to 64 bits executable
+
+## For windows install 
+http://mingw-w64.org/doku.php/download/win-builds
+
+## For linux install
+- Ubuntu, Debian: $ sudo apt-get install gcc make nasm
+- Fedora: $ sudo dnf install gcc make nasm
+- CentOS, RHEL: $ sudo yum install gcc make nasm
+
 ```
 C:\MinGW64\bin>gcc -m64 -B c:\MinGW64\bin c:\temp\teste64.obj -o c:\temp\teste64.exe
 teste64.exe
