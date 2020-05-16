@@ -75,8 +75,8 @@ http://mingw-w64.org/doku.php/download/win-builds
 - CentOS, RHEL: $ sudo yum install gcc make nasm
 
 ```
-C:\MinGW64\bin>gcc -m64 -B c:\MinGW64\bin c:\temp\teste64.obj -o c:\temp\teste64.exe
-teste64.exe
+C:\MinGW64\bin>gcc -m64 teste64.obj -o teste64.exe
+C:\MinGW64\bin>teste64.exe
 ```
 
 # Developing for Linux
