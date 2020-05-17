@@ -103,9 +103,10 @@ msg:      db        "Hello, World!", 10      ; note the newline at the end with 
 
 ## Compile it to linux 64bits object
 ```
-nasm -f elf64 hello.asm && gcc hello.o && ./hello
-nasm -f elf64 hello.asm && ld -o hello hello.o && chmod u+x hello
-./hello
+nasm -felf64 hello_world.asm -o hello_world.o / or nasm -f elf64 hello.asm && ld -o hello hello.o
+gcc hello_world.o -o hello_world
+chmod u+x hello_world
+./hello_world
 ```
 
 # References
