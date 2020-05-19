@@ -27,3 +27,6 @@ START /B .\coveragereport\index.htm
 In DOS or Notepad++, escape symbol for Windows 10 and above can be entered with `ALT` + `027` or `CTRL` + `[`.
 - Green color = `^[[92m` (in notepad++ displays `ESC[92m`)
 - Default color = `^[[0m` 
+
+Colors:
+https://en.wikipedia.org/wiki/ANSI_escape_code#Example_of_use_in_C
