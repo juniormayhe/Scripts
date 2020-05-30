@@ -41,3 +41,22 @@ sudo rm -rf /Library/Java/JavaVirtualMachines
 ```
 
 ref https://explainjava.com/uninstall-java-macos/
+
+# Install cocoapods
+
+Install xcode from App Store. IT WILL TAKE A LONG TIME.
+
+Accept xcode license
+```
+sudo xcodebuild -license accept
+```
+
+Configure xcode command line tools to use latest xcode
+```
+sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+```
+
+Install cocoapods
+```
+sudo gem install cocopods
+```
