@@ -78,7 +78,7 @@ Accept xcode license
 sudo xcodebuild -license accept
 ```
 
-Configure xcode command line tools to use latest xcode
+Configure Xcode command line tools to use latest xcode
 ```
 sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
 ```
