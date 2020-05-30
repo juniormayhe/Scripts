@@ -1,4 +1,6 @@
-# Install java in MacOS
+# Prepare flutter dev environment for MacOS
+
+## Install java in MacOS
 
 When running flutter doctor in MacOS Catalina an error message may appear
 
@@ -30,7 +32,7 @@ export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
 
 When opening a new `Terminal`, enter `java -version` and you will get something as "java version 1.8.0_251".
 
-# Remove java
+## Remove java
 
 To remove Java completely, go to Terminal 
 ```
@@ -42,7 +44,7 @@ sudo rm -rf /Library/Java/JavaVirtualMachines
 
 ref https://explainjava.com/uninstall-java-macos/
 
-# Install cocoapods
+## Install Xcode and cocoapods
 
 Install xcode from App Store. IT WILL TAKE A LONG TIME.
 
