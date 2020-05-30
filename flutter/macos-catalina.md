@@ -39,6 +39,9 @@ or
 export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
 ```
 
+That will render export `JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_251.jdk/Contents/Home`
+
+
 When opening a new `Terminal`, enter `java -version` and you will get something as "java version 1.8.0_251".
 
 ## Remove java
@@ -57,7 +60,6 @@ ref https://explainjava.com/uninstall-java-macos/
 Edit .bash_profile to add
 ```
 export PATH="$PATH:/Users/<your name>/Developer/flutter/bin"
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_251.jdk/Contents/Home
 ```
 
 Edit .zshrc
