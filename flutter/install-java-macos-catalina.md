@@ -21,4 +21,23 @@ and install them.
 
 Installing process needs to allow installation in *System Preferences > Security & Privacy > General > Open anyway* button. 
 
+Edit .bash_profile with *vim* to add the java home
+```
+export JAVA_HOME=$(/usr/libexec/java_home)
+or
+export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
+```
+
 When opening a new `Terminal`, enter `java -version` and you will get something as "java version 1.8.0_251".
+
+# Remove java
+
+To remove Java completely, go to Terminal 
+```
+rm -rf /Library/Internet\ Plug-Ins/JavaAppletPlugin.plugin  
+sudo rm -rf /Library/PreferencePanes/JavaControlPanel.prefPane  
+sudo rm -rf /Library/Application\ Support/Oracle/Java/ 
+sudo rm -rf /Library/Java/JavaVirtualMachines 
+```
+
+ref https://explainjava.com/uninstall-java-macos/
