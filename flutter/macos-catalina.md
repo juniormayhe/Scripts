@@ -1,5 +1,10 @@
 # Prepare flutter dev environment for MacOS
 
+## Disable gatekeeyper to avoid issues with dart on Android Studio
+```
+sudo spctl --master-disable
+```
+
 ## Download Flutter
 
 Unzip and move flutter folder to `Users/<your name>/Developer/flutter`
