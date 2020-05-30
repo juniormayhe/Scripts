@@ -1,5 +1,14 @@
 # Prepare flutter dev environment for MacOS
 
+## Download Flutter
+
+Unzip and move flutter folder to `Users/<your name>/Developer/flutter`
+
+Open Terminal and accept licenses
+```
+flutter doctor --android-licenses
+```
+
 ## Install java in MacOS
 
 When running flutter doctor in MacOS Catalina an error message may appear
@@ -41,8 +50,22 @@ sudo rm -rf /Library/PreferencePanes/JavaControlPanel.prefPane
 sudo rm -rf /Library/Application\ Support/Oracle/Java/ 
 sudo rm -rf /Library/Java/JavaVirtualMachines 
 ```
-
 ref https://explainjava.com/uninstall-java-macos/
+
+## Edit bash profile
+
+Edit .bash_profile to add
+```
+export PATH="$PATH:/Users/<your name>/Developer/flutter/bin"
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_251.jdk/Contents/Home
+```
+
+Edit .zshrc
+
+vim .zshrc
+```
+export PATH="$PATH:$HOME/Developer/flutter/bin"
+```
 
 ## Install Xcode and cocoapods
 
@@ -61,4 +84,17 @@ sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
 Install cocoapods
 ```
 sudo gem install cocopods
+```
+
+## Install Android studio
+
+Download and open dmg file. In the new Android Studio 4.0.0 window, drag and drop *Android Studio* icon to *Applications* folder.
+Ref: https://developer.android.com/studio/install
+
+## Run flutter doctor
+
+In terminal, check if flutter environment is ready
+
+```
+flutter doctor
 ```
