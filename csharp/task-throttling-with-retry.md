@@ -3,7 +3,7 @@
     using System.Threading.Tasks;
 
     using Polly;
-
+    // can be used withint Parallel.For(0, totalMerchants, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, async (index) => { ... }); in case cassandra or mongo causes timeout or lock issues
     internal class TaskThrottling : System.IDisposable
     {
         private readonly Semaphore semaphore;
