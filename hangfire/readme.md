@@ -141,3 +141,105 @@ namespace YourJobs
 }
 
 ```
+
+## Add hangfire to startup
+
+```csharp
+namespace MyWebAPI
+{
+    using System;
+
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
+
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public partial class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
+            this.Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services
+                ...
+                .AddYourJobs(this.Configuration);
+        }
+
+        public void Configure(IApplicationBuilder appBuilder, IServiceProvider serviceProvider, IWebHostEnvironment hostEnvironment, IHostApplicationLifetime appLifetime)
+        {
+            appBuilder
+                ...
+                .UseYourJobs();
+
+            appLifetime.ConfigureMessagingServicesLifetime(serviceProvider);
+        }
+
+        public static IServiceCollection AddOuterJobsServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            var hangfireSettings = services.AddAndGetSettings<HangfireSettings>(configuration);
+            
+            services
+               ...
+               .AddHangfire((serviceProvider, config) =>
+               {
+                    config.UseMongoStorage(settings.MongoSettings.ConnectionString, new MongoStorageOptions
+                    {
+                        MigrationOptions = new MongoMigrationOptions(settings.MongoSettings.MigrationStrategy)
+                    });
+
+                    config
+                        .UseColouredConsoleLogProvider()
+                        .UseSimpleAssemblyNameTypeSerializer()
+                        .UseRecommendedSerializerSettings()
+                        .UseConsole()
+                        .UseDashboardMetric(DashboardMetrics.ServerCount)
+                        .UseDashboardMetric(DashboardMetrics.RecurringJobCount)
+                        .UseDashboardMetric(DashboardMetrics.RetriesCount)
+                        .UseDashboardMetric(DashboardMetrics.EnqueuedAndQueueCount)
+                        .UseDashboardMetric(DashboardMetrics.ScheduledCount)
+                        .UseDashboardMetric(DashboardMetrics.ProcessingCount)
+                        .UseDashboardMetric(DashboardMetrics.SucceededCount)
+                        .UseDashboardMetric(DashboardMetrics.FailedCount)
+                        .UseManagementPages(options =>
+                        {
+                            return options
+                                .AddJobs(Assembly.GetExecutingAssembly());
+                        });
+               });
+
+            services.AddHangfireServer(options => options.Queues = new[] { Environment.MachineName });
+            
+            return services;
+        }
+
+        public static IApplicationBuilder UseYourJobs(this IApplicationBuilder appBuilder)
+        {
+            var hangfireSettings = appBuilder.ApplicationServices.GetRequiredService<IOptions<HangfireSettings>>().Value;
+
+            if (hangfireSettings.Enabled)
+            {
+                var dashboardOptions = new DashboardOptions
+                {
+                    Authorization = new[] { new PassthroughDashboardAuthorization() },
+                    DashboardTitle = "My Hangfire dashboard title",
+                    DisplayStorageConnectionString = false,
+                    DisplayNameFunc = (ctx, job) => job.Type.Name
+                };
+
+                appBuilder.UseHangfireDashboard("/hangfire", dashboardOptions);
+                appBuilder.UseHangfireServer();
+            }
+
+            return appBuilder;
+        }
+    }
+}
+
+```
