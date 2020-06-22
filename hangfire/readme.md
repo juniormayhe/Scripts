@@ -243,3 +243,24 @@ namespace MyWebAPI
 }
 
 ```
+## Settings
+```json
+{
+  "SystemLogging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*",
+
+  "HangfireSettings": {
+    "Enabled": true,
+    "MongoSettings": {
+      "ConnectionString": "mongodb://localhost:27017/your_db_name",
+      "MigrationStrategy": "Migrate"
+    }
+  }
+}
+```
