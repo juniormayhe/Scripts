@@ -19,6 +19,19 @@ Field `my-message` contains a the string `Failed` value
 }
 ```
 
+or wildcard
+```json
+{
+  "query": {
+    "wildcard": {
+      "my-field": {
+        "value": "*Failed*"
+      }
+    }
+  }
+}
+```
+
 ## Starts with
 
 Field `my-message` starts with `MyCompany.API`
