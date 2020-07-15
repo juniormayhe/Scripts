@@ -175,3 +175,24 @@ save your changes done in running container at any time
 ```
 docker commit -m "fixing init script" -a "Junior" container_Id kafka_base
 ```
+
+## Shutdown
+Enter the container to shutdown
+```
+docker exec -it <container id> bash
+```
+
+install ps to see processes
+```
+apt-get update && apt-get install -y procps
+```
+
+Graceful shutdown
+```
+kill -s 15 $(pidof dotnet)
+```
+
+Forced shutdown
+```
+kill -s 15 $(pidof dotnet)
+```
