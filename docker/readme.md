@@ -176,7 +176,7 @@ save your changes done in running container at any time
 docker commit -m "fixing init script" -a "Junior" container_Id kafka_base
 ```
 
-## Shutdown
+## Shutdown processes within container
 Enter the container to shutdown
 ```
 docker exec -it <container id> bash
