@@ -22,5 +22,5 @@ output_remote_repository_content() {
 export -f output_remote_repository_content
 
 # search in your your-local-path all files that starts with "repository: https://www.github.com"
-grep -hr "^repository: https://gitlab.fftech.info" your-local-path | awk '{ print $2 }' | sort | uniq | sed 's|https://\(www.github.com\)/|git@\1:|' | xargs -P0 -I {} bash -c "output_remote_repository_content {}"
+grep -hr "^repository: https://www.github.com" your-local-path | awk '{ print $2 }' | sort | uniq | sed 's|https://\(www.github.com\)/|git@\1:|' | xargs -P0 -I {} bash -c "output_remote_repository_content {}"
 ```
