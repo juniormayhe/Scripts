@@ -44,3 +44,37 @@ Field `my-message` starts with `MyCompany.API`
   }
 }
 ```
+
+Filters for logzio kibana:
+
+## Contains with wildcard
+
+Field `Msg.Message` contains `Filtering`
+```
+{
+  "query": {
+    "wildcard": {
+      "Msg.Message": {
+        "boost": 1,
+        "rewrite": "constant_score",
+        "value": "*Filtering*"
+      }
+    }
+  }
+}
+```
+
+Field `Msg.Data.obj.FilteredEntities` contains `EstimatedDeliveryDateThresholdServiceTypeFilter`
+```
+{
+  "query": {
+    "wildcard": {
+      "Msg.Data.obj.FilteredEntities": {
+        "boost": 1,
+        "rewrite": "constant_score",
+        "value": "*EstimatedDeliveryDateThresholdServiceTypeFilter*"
+      }
+    }
+  }
+}
+```
