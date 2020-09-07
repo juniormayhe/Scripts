@@ -1,4 +1,4 @@
-docker-compose up
+docker-compose up -d
 
 ```yaml
 version: '3.5'
