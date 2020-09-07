@@ -18,6 +18,7 @@ services:
     #volumes:
     #  - C:\temp\mongodb_data:/data/db
     #  - C:\temp\mongodb_log:/var/log/mongodb/
+    restart: always
     networks:
       - mongo-network
 
