@@ -1,27 +1,22 @@
 docker-compose up docker-compose.yml
 
 ```yaml
-version: '3'
+version: '3.5'
 
 services:
   cassandra:
-    image: cassandra
+    image: cassandra:latest
+    container_name: cassandra
     ports:
-      - "7000-7000"
-      - "7001-7001"
-      - "7199-7199"
-      - "9042-9042"
-      - "9160-9160"
+      - "9042:9042"
+      - "9160:9160"
+      - "7001:7001"
+      - "7000:7000"
+      - "7199:7199"
+    environment:
+      - "MAX_HEAP_SIZE=256M"
+      - "HEAP_NEWSIZE=128M"
+    restart: always
     volumes:
-      - data-volume:/data/db
-      
-    networks:
-      - cassandra-network
-
-volumes:
-  data-volume:
-    
-networks: 
-    cassandra-network:
-      driver: bridge
+      - C:\temp\cassandra_data:/var/lib/cassandra
 ```
