@@ -101,11 +101,25 @@
 ```
 
 ## windows terminal here
+
+%localappdata% does not work here
+
 ```regedit
 Windows Registry Editor Version 5.00
-
+;a REG_EXPAND_SZ with  C:\Program Files\WindowsApps\Microsoft.WindowsTerminal_1.3.2651.0_x64__8wekyb3d8bbwe\WindowsTerminal.exe
+@="Windows Terminal Here"
+"Icon"=hex(2):20,00,43,00,3a,00,5c,00,50,00,72,00,6f,00,67,00,72,00,61,00,6d,\
+  00,20,00,46,00,69,00,6c,00,65,00,73,00,5c,00,57,00,69,00,6e,00,64,00,6f,00,\
+  77,00,73,00,41,00,70,00,70,00,73,00,5c,00,4d,00,69,00,63,00,72,00,6f,00,73,\
+  00,6f,00,66,00,74,00,2e,00,57,00,69,00,6e,00,64,00,6f,00,77,00,73,00,54,00,\
+  65,00,72,00,6d,00,69,00,6e,00,61,00,6c,00,5f,00,31,00,2e,00,33,00,2e,00,32,\
+  00,36,00,35,00,31,00,2e,00,30,00,5f,00,78,00,36,00,34,00,5f,00,5f,00,38,00,\
+  77,00,65,00,6b,00,79,00,62,00,33,00,64,00,38,00,62,00,62,00,77,00,65,00,5c,\
+  00,57,00,69,00,6e,00,64,00,6f,00,77,00,73,00,54,00,65,00,72,00,6d,00,69,00,\
+  6e,00,61,00,6c,00,2e,00,65,00,78,00,65,00,00,00
+  
 [HKEY_CLASSES_ROOT\Directory\Background\shell\windowsterminal]
 @="Windows Terminal Here"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\windowsterminal\command]
-@="\"C:\\Users\\{USERNAME}\\AppData\\Local\\Microsoft\\WindowsApps\\wt.exe\""
+"C:\Users\junior\AppData\Local\Microsoft\WindowsApps\wt.exe" -d "%V"
 ```
