@@ -27,9 +27,9 @@ The signal codes evaluated in this investigation are:
 ## Preparing the evaluation
 To evaluate the netcore application shutdown we used the following tools:
 
-- ![bombardier](https://github.com/codesenberg/bombardier) - for sending requests and testing load balancer
-- ![postman](https://www.postman.com/downloads/) - for sending requests
-- ![docker for windows](https://docs.docker.com/docker-for-windows/install/) - for enabling a local Kubernetes environment with kubectl containerized net core 3.1 app
+- [bombardier](https://github.com/codesenberg/bombardier) - for sending requests and testing load balancer
+- [postman](https://www.postman.com/downloads/) - for sending requests
+- [docker for windows](https://docs.docker.com/docker-for-windows/install/) - for enabling a local Kubernetes environment with kubectl containerized net core 3.1 app
 - Kubernetes declarative management files - for creating cluster
 
 ## Scenarios
@@ -317,17 +317,17 @@ TL;DR
 
 After a scale down in the Kubernetes cluster, all in-flight or pending requests are fulfilled by netcore application after receiving a termination signal. Since the Routing Service might need some time to dispatch its internal events (around 45 seconds) and to avoid changing the application, we could make use of terminationGracePeriodSeconds
 
-The netcore ![IWebHostBuilder.UseShutdownTimeout](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.hosting.hostingabstractionswebhostbuilderextensions.useshutdowntimeout?view=aspnetcore-3.1) has no effect because the higher object in Kubernetes has priority on shutdown policy, so the app cannot extend its own grace period because it must obey to the Kubernetes deployment specification, defined in Kubernetes declarative yaml.
+The netcore [IWebHostBuilder.UseShutdownTimeout](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.hosting.hostingabstractionswebhostbuilderextensions.useshutdowntimeout?view=aspnetcore-3.1) has no effect because the higher object in Kubernetes has priority on shutdown policy, so the app cannot extend its own grace period because it must obey to the Kubernetes deployment specification, defined in Kubernetes declarative yaml.
 
 There would be an edge case where the netcore application receives a SIGTERM (shutdown request) but the load balancer did not get updated yet, so the pod container keeps receiving in-flight requests.
 
 We were unable to reproduce this update slowness in the load balancer, because all requests were responded were all answered within the expected time status code 200 OK after the scale down.
 
-To get around this possible edge case with Kubernetes load balancer update slowness, there is a ![suggestion](https://blog.markvincze.com/graceful-termination-in-kubernetes-with-asp-net-core/) to add a Thread.Sleep in ApplicationStopping event to give the load balancer time to update itself while the application responds to requests. The ApplicationStopping is a host lifetime that can be defined on netcore application startup.
+To get around this possible edge case with Kubernetes load balancer update slowness, there is a [suggestion](https://blog.markvincze.com/graceful-termination-in-kubernetes-with-asp-net-core/) to add a Thread.Sleep in ApplicationStopping event to give the load balancer time to update itself while the application responds to requests. The ApplicationStopping is a host lifetime that can be defined on netcore application startup.
 
 We tested the scale down with two images, one with and another without this suspension in the host lifetime thread and the requests were all satisfied. We even create a netcore application image that responds in 500ms response time which is the average response time of Routing Service and all requests were again responded correctly after the scale down.
 
-Kubernetes gives a default of ![30 seconds](https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods) for the container to shut down. Within 30 seconds, in around 10 seconds it updates the Load Balancer. We could not find if 10 seconds is related to a health check interval done with a ![default readiness probe interval](https://github.com/kubernetes/kubernetes/blob/master/pkg/apis/core/v1/defaults_test.go#L70), set by periodSeconds.
+Kubernetes gives a default of [30 seconds](https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods) for the container to shut down. Within 30 seconds, in around 10 seconds it updates the Load Balancer. We could not find if 10 seconds is related to a health check interval done with a [default readiness probe interval](https://github.com/kubernetes/kubernetes/blob/master/pkg/apis/core/v1/defaults_test.go#L70), set by periodSeconds.
 
 If the application has some final processing to do, we extend the time in ApplicationStopping event to deal with pending tasks. Or we can avoid this implementation and extend the time via Kubernetes declarative yaml with the setting terminationGracePeriodSeconds: 60 so the application has more time to do some final processing within this time limit.
 
