@@ -1,8 +1,6 @@
 # Add self signed certificate for react app
 
-Generate the cert and private key:
-
-https://github.com/juniormayhe/Scripts/blob/41581aaec7e9248980669af793dfed0387176dbf/windows/self-signed-ssl-certificate.md
+First [generate the cert and private key](https://github.com/juniormayhe/Scripts/blob/41581aaec7e9248980669af793dfed0387176dbf/windows/self-signed-ssl-certificate.md)
 
 In packages.json scripts, add your exports
 ```
