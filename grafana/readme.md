@@ -56,6 +56,9 @@ DATABASES = {
 ```
 
 Create graphite database objects
+
+> this command does not work in hopsoft/graphite-statsd docker container
+
 ```
 cd /usr/bin
 sudo django-admin migrate --settings=graphite.settings --run-syncdb
@@ -135,12 +138,28 @@ sudo node ./stats.js ./localConfig.js
 ```
 
 ### on docker
+
+Download hopsoft/graphite-statsd container image
+
 ```
 docker run -d --name graphite --restart=always -p 81:81 -p 8125:8125/udp hopsoft/graphite-statsd
 ```
-then visit
-http://localhost:81/
+then visit http://localhost:81/
+and test login user and pass  root/root
 
+To create an admin user 
+```
+docker exec -it <container id> bash
+PYTHONPATH=/opt/graphite/webapp django-admin.py createsuperuser --settings=graphite.settings
+```
+
+then update and upgrade ubutu OS image
+```
+apt-get update
+apt-get upgrade
+```
+
+restart container and login with admin/admin
 ## Configure sampling frequency and retention policy in graphite aggregator
 
 Edit aggregator settings
@@ -171,10 +190,12 @@ sudo systemctl start apache2
 
 ## Add datasource in grafana
 
-- Go to http://localhost:81/ and click on "Add data source", choose "Graphite"
+- Run grafana and graphite containers
+- Go to http://localhost:3000/login
+- Go to configuration icon > Data sources > Add data source, choose "Graphite"
 - In Settings, 
   - type the datasource name in Name field
-  - type the graphite ip address in URL field
+  - type the graphite ip address http://localhost:81 in URL field
   - choose Server (default) in Access field to allow grafana server fetch datasource. Browser option is used to allow browser do direct calls to graphite datasource.
   - click on Save and test
 - 
