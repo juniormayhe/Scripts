@@ -168,3 +168,14 @@ sudo systemctl start apache2
 - https://github.com/aussiearef/StatsDBash/blob/master/StatD.sh
 - https://github.com/aussiearef/StatsDPS/blob/master/StatsD.ps1
 - https://github.com/aussiearef/StatsD-Client/blob/master/StatsDClient/StatsD.cs
+
+## Add datasource in grafana
+
+- Go to http://localhost:81/ and click on "Add data source", choose "Graphite"
+- In Settings, 
+  - type the datasource name in Name field
+  - type the graphite ip address in URL field
+  - choose Server (default) in Access field to allow grafana server fetch datasource. Browser option is used to allow browser do direct calls to graphite datasource.
+  - click on Save and test
+- 
+
