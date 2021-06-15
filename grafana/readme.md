@@ -1,18 +1,18 @@
 # Grafana
 
-## Container installation with graphite and grafana docker images
+## Installing and running graphite and grafana docker containers
 ```
 docker run -d --name graphite --restart=always -p 80:80 -p 2003-2004:2003-2004 -p 2023-2024:2023-2024 -p 8125:8125/udp -p 8126:8126 graphiteapp/graphite-statsd
 docker run -d --name=grafana -p 3000:3000 grafana/grafana
 ```
 
-### Test graphite login
+- Test graphite login
 
 Go to http://localhost:81/ with credentials root/root
 
 To add user or change users permissions go to http://localhost:81/admin/auth/user/
 
-### Test grafana login
+- Test grafana login
 
 Login to local grafana with user pass admin/admin
 
@@ -21,7 +21,7 @@ http://localhost:3000/login
 ### Setup grafana Settings
 
 - Go to Configuration icon > Data sources > Add new datasource
-- In HTTP > Url enter your IP:port where graphite is running. Do not enter localhost or 127.0.0.1 since grafana container has no graphite process running within is own container.
+- In HTTP > Url enter your `IP:port` where graphite is running. Do not enter localhost or 127.0.0.1 since grafana container has no graphite process running within the same container.
 - Click on Save & Test button
 
 ## Installing Graphite on Linux host
