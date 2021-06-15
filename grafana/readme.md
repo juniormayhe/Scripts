@@ -1,36 +1,56 @@
 # Grafana
 
-## Install local grafana docker image
+## Container installation with graphite and grafana docker images
 ```
+docker run -d --name graphite --restart=always -p 80:80 -p 2003-2004:2003-2004 -p 2023-2024:2023-2024 -p 8125:8125/udp -p 8126:8126 graphiteapp/graphite-statsd
 docker run -d --name=grafana -p 3000:3000 grafana/grafana
 ```
 
-## Login to local grafana with user pass admin/admin
+### Test graphite login
+
+Go to http://localhost:81/ with credentials root/root
+
+To add user or change users permissions go to http://localhost:81/admin/auth/user/
+
+### Test grafana login
+
+Login to local grafana with user pass admin/admin
+
 http://localhost:3000/login
 
-## Adding a Graphite data source to Grafana
+### Setup grafana Settings
 
-Graphite stores and visualizes metrics / time-series data to track the performance of their websites, applications, business services, and networked servers. 
+- Go to Configuration icon > Data sources > Add new datasource
+- In HTTP > Url enter your IP:port where graphite is running. Do not enter localhost or 127.0.0.1 since grafana container has no graphite process running within is own container.
+- Click on Save & Test button
+
+## Installing Graphite on Linux host
+
+Graphite stores time-series data to track the performance of their websites, applications, business services, and networked servers. It can visualize metrics in a simple way and not as sophisticated as grafana does.
+
 It has two modules, graphite-web (frontend) and graphite-carbon (backend to collect metrics)
-### on linux
-update packages
+
+### Update packages
 ```
 sudo apt-get update
 sudo apt-get-upgrade
 sudo reboot
 ```
-install graphite
+
+### Install graphite
 ```
 sudo apt-get install graphite-web graphite-carbon
 sudo apt-get install apache2
 ```
 
-install dependencies. Graphite web is a WSGI script (specification for mapping webserver and graphite-web python web app)
+### Install dependencies 
+
+Graphite web is a WSGI script (specification for mapping webserver and graphite-web python web app)
 ```
 sudo apt-get install libapache2-mod-wsgi
 ```
 
-configure Graphite settings
+### Configure Graphite settings
 ```
 vi /etc/graphite/local_settings.py
 ```
@@ -55,16 +75,16 @@ DATABASES = {
 }
 ```
 
-Create graphite database objects
+### Create graphite database objects
 
-> this command does not work in hopsoft/graphite-statsd docker container
+> this command does not work in some versions of graphite. We have to check if migrate.py syncdb mentioned in settings does what is needed of if this command is not needed anymore
 
 ```
 cd /usr/bin
 sudo django-admin migrate --settings=graphite.settings --run-syncdb
 ```
 
-Now enable carbon cache
+### Enable carbon cache
 ```
 cd /usr/bin
 sudo vi /etc/default/graphite-carbon
@@ -79,6 +99,8 @@ Start carbon cache service
 sudo systemctl start carbon-cache
 sudo systemctl enable carbon-cache
 ```
+
+### Setup graphite web site
 
 Remove default apache web site and add a graphite as default web site
 ```
@@ -113,7 +135,7 @@ sudo systemctl stop apache2
 sudo systemctl start apache2
 ```
 
-Install StatsD
+### Install StatsD
 
 Download and install nodejs
 ```
@@ -137,30 +159,9 @@ cd /opt/statsd
 sudo node ./stats.js ./localConfig.js
 ```
 
-### on docker
-
-Download hopsoft/graphite-statsd container image
-
-```
-docker run -d --name graphite --restart=always -p 81:81 -p 8125:8125/udp hopsoft/graphite-statsd
-```
-then visit http://localhost:81/
-and test login user and pass  root/root
-
-To create an admin user 
-```
-docker exec -it <container id> bash
-PYTHONPATH=/opt/graphite/webapp django-admin.py createsuperuser --settings=graphite.settings
-```
-
-then update and upgrade ubutu OS image
-```
-apt-get update
-apt-get upgrade
-```
-
 restart container and login with admin/admin
-## Configure sampling frequency and retention policy in graphite aggregator
+
+### Configure sampling frequency and retention policy in graphite aggregator
 
 Edit aggregator settings
 ```
