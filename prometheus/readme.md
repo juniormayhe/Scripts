@@ -1,5 +1,11 @@
 # Prometheus
 
+Prometheus is both pull-based and push-based metrics collector. 
+
+In pull-based collection, prometheus fetches metric data from applications that have implemented metrics collection at http://machine-name:9090/metrics. When we cannot implement metrics collection by changing applications source code, we must use exporters. Exporters can collect metrics from SQL Server and other 3rd party tools that we cannot change source code. Prometheus will then fetch metric data from exporters.
+
+In push-based collection, applications send metric data directly to prometheus. Push-based is common for short-lived applications because there is no reason for them to be pulled by prometheus every N seconds since they can go offline anyime. A Push Gateway aggregates metrics sent by short-lived applications and sends them to prometheus.
+
 ## Create your local prometheus configuration file
 
 prometheus.yaml
@@ -28,6 +34,10 @@ scrape_configs:
   static_configs:
   - targets:
     - localhost:9090
+```
+After changing configuration stop or restart container
+```powershell
+docker container restart prometheus
 ```
 
 ## Run Prometheus on docker
