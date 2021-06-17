@@ -101,3 +101,13 @@ app.get('/', function (req, res) {
     //counter.inc();
 });
 ```
+
+## Exporters
+
+- for linux machines https://github.com/prometheus/node_exporter
+- for windows machines https://github.com/prometheus-community/windows_exporter
+
+### Windows exporter
+
+- Download the release https://github.com/prometheus-community/windows_exporter/releases
+- Visit http://localhost:9182/metrics
