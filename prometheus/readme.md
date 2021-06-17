@@ -53,3 +53,51 @@ docker run --name prometheus --rm -d -p 9090:9090 -v C:\wander\curso-prometheus\
 - To check prometheus current configuration visit http://localhost:9090/config
 - To check prometheus `scrape_duration_seconds` visit http://localhost:9090/graph?g0.expr=scrape_duration_seconds&g0.tab=0&g0.stacked=0&g0.range_input=15m
 
+## Visualize metrics in prometheus
+
+Some PromQL examples for visualizing metrics data
+
+1) Counter growth rate: `increase(<counter name>[<start time interval until now>])`
+
+Shows growth rate in the last minute for myapp_requests_counter:
+```promql
+increase(myapp_requests_counter[1m])
+```
+
+2) Sum all counters growth rates: `sum(increase(<counter name>[<start time interval until now>]))`
+
+Sum all counter series (different promql labels) in the last minute for myapp_requests_counter:
+```promql
+sum(increase(myapp_requests_counter[1m]))
+```
+
+3) Filter counter growth rate: `sum(increase(<counter name>[<start time interval until now>]))`
+
+Get specific counter (promql label) in the last minute for myapp_requests_counter:
+```promql
+sum(increase(myapp_requests_counter{statusCode="200"}[1m]))
+```
+the labels must have been set by instrumentation with promql client, like so:
+```node
+// install express
+// npm install --save express
+var express = require('express');
+var app = express();
+
+// install prometheus client 
+// npm install --save prom-client
+var client = require('prom-client');
+
+const counter = new client.Counter({
+    name: 'myapp_requests_counter',
+    help: 'GET Requests counter',
+    labelNames: ['statusCode']
+});
+
+app.get('/', function (req, res) {
+    counter.labels('200').inc();
+    
+    res.send('hello');
+    //counter.inc();
+});
+```
