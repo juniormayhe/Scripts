@@ -71,7 +71,7 @@ Sum all counter series (different promql labels) in the last minute for myapp_re
 sum(increase(myapp_requests_counter[1m]))
 ```
 
-3) Filter counter growth rate: `sum(increase(<counter name>[<start time interval until now>]))`
+3) Filter counter growth rate: `sum(increase(<counter name>{<label name>="<value>"}[<start time interval until now>]))`
 
 Get specific counter (promql label) in the last minute for myapp_requests_counter:
 ```promql
