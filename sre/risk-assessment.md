@@ -91,6 +91,4 @@ Find the risk level that matches Severity and Probability, already coded in our 
   
   > If desired you add a column to your Risk assessment table to classify Risk level as Extremely High, High, Medium, or Low by checking the relationship between Severity (how much damage would be caused) and Probability (how often it would happen).
 
-![](https://github.com/juniormayhe/Scripts/tree/master/sre/2021-06-17_10h29_24.png)
-
-  
+![](https://github.com/juniormayhe/Scripts/blob/master/sre/2021-06-17_10h29_24.png?raw=true)
