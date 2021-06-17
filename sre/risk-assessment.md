@@ -86,3 +86,10 @@ Find the risk level that matches Severity and Probability, already coded in our 
 - High
 - Medium
 - Low
+
+  ## Risk matrix
+  
+  > If desired you add a column to your Risk assessment table to classify Risk level as Extremely High, High, Medium, or Low by checking the relationship between Severity (how much damage would be caused) and Probability (how often it would happen).
+
+
+  
