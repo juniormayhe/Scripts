@@ -111,3 +111,12 @@ app.get('/', function (req, res) {
 
 - Download the release https://github.com/prometheus-community/windows_exporter/releases
 - Visit http://localhost:9182/metrics
+
+## PromQL
+
+### Counter queries
+
+- Instant vector or get current counter for current timestamp `<counter name>`. This will plot a graph where the counter always grow which doesn't make much sense. In grafana it might be more useful to plot this counter in a stats or gauge graph.
+- Growth rate per second in the last minute `rate(<counter name>[1m])`. With rate we avoid showing a counter continuously growing in graph. A range vector is needed, in this case 1 minute or [1m]. And the result or rate function is an instant vector. Each label will hold a single value.
+- Growth rate per minute in the last minute `rate(<counter name>[1m]) * 60`
+- How much the counter increased or grew in the last minute `increase(<counter name>[1m])` this will return a similar result as `rate(<counter name>[1m]) * 60` because both functions return the growth in the last minute.
