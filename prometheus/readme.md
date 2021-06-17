@@ -95,7 +95,7 @@ const counter = new client.Counter({
 });
 
 app.get('/', function (req, res) {
-    counter.labels('200').inc(); //add statusCode label
+    counter.labels('200').inc(); // adds statusCode label
     
     res.send('hello');
     //counter.inc();
