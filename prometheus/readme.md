@@ -127,7 +127,7 @@ app.get('/', function (req, res) {
 
 ### Summary queries
 
-- Instant vector or get current counter for current timestamp `<counter name>`.
+- Instant vector or get current summary for current timestamp `<counter name>`. This will list all quantile values by labels: instance, job and le.
 
 the percentiles buckets are set in instrumentation with promql client, like so:
 ```node
@@ -155,7 +155,8 @@ app.get('/', function (req, res) {
 
 ### Histogram queries
 
-- Get amount registered in a specific bucket for current timestamp `<histogram name>_bucket{le="<value>"}` where value relates to the nature of the data you instrumented (elapsed time, temperature, etc). If the values are response time in seconds we could get the amount of response times that took up to 300 ms with `<histogram name>_bucket{le="0.3"}`. Since the amount of response times acts like a counter and grow over time for the 300ms bucket we need to use rate or increase and use a range vector `increase(<histogram name>_bucket{le="0.3"})[1m]`
+- Get total registered in all buckets for current timestamp `<histogram name>_bucket`.
+- Get total registered in a specific bucket for current timestamp `<histogram name>_bucket{le="<value>"}` where value relates to the nature of the data you instrumented (elapsed time, temperature, etc). If the values are response time in seconds we could get the amount of response times that took up to 300 ms with `<histogram name>_bucket{le="0.3"}`. Since the amount of response times acts like a counter and grow over time for the 300ms bucket we need to use rate or increase and use a range vector `increase(<histogram name>_bucket{le="0.3"})[1m]`
 - Calculate the 90th percentile of response time over (aka 90% of the fulfilled requests) the last 10 minutes `histogram_quantile( 0.9, rate(myapp_summary_response_time[10m]) )`. To calculate or infer the percentile (e.g. 0.9) is useful when the buckets have a different set of labels (0.005, 0.01, 0.025, 0.5, ...) 
 - Aggregate with sum the previous query by job name (all instances or ip addresses will be consolidated). `histogram_quantile( 0.9, sum(rate(myapp_summary_response_time[10m])) by (job, le) )`. The le label is required when aggregating the desired percentile.
 - Get the total of requests for all buckets `<histogram name>_count`. This is the same of `<histogram name>_bucket{le="+Inf"}`.
