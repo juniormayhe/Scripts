@@ -156,7 +156,9 @@ app.get('/', function (req, res) {
 ### Histogram queries
 
 - Instant vector or get current counter for current timestamp `<counter name>`.
-
+- Calculate the 90th percentile of response time over (aka 90% of the fulfilled requests) the last 10 minutes `histogram_quantile( 0.9, rate(myapp_summary_response_time[10m]) )`. To calculate or infer the percentile (e.g. 0.9) is useful when the buckets have a different set of labels (0.005, 0.01, 0.025, 0.5, ...) 
+- Aggregate with sum the previous query by job name (all instances or ip addresses will be consolidated). `histogram_quantile( 0.9, sum(rate(myapp_summary_response_time[10m])) by (job, le) )`. The le label is required when aggregating the desired percentile.
+- 
 the value buckets are set in instrumentation with promql client, like so:
 ```node
 // install express
@@ -186,3 +188,4 @@ app.get('/', function (req, res) {
     res.send('hello');
 });
 ```
+
