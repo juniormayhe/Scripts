@@ -120,3 +120,69 @@ app.get('/', function (req, res) {
 - Growth rate per second in the last minute `rate(<counter name>[1m])`. With rate we avoid showing a counter continuously growing in graph. A range vector is needed, in this case 1 minute or [1m]. And the result or rate function is an instant vector. Each label will hold a single value.
 - Growth rate per minute in the last minute `rate(<counter name>[1m]) * 60`
 - How much the counter increased or grew in the last minute `increase(<counter name>[1m])` this will return a similar result as `rate(<counter name>[1m]) * 60` because both functions return the growth in the last minute.
+
+### Gauge queries
+
+- Instant vector or get current counter for current timestamp `<counter name>`.
+
+### Summary queries
+
+- Instant vector or get current counter for current timestamp `<counter name>`.
+
+the percentiles buckets are set in instrumentation with promql client, like so:
+```node
+// install express
+// npm install --save express
+var express = require('express');
+var app = express();
+
+// install prometheus client 
+// npm install --save prom-client
+var client = require('prom-client');
+
+const summary = new client.Summary({
+    name: 'myapp_summary_response_time',
+    help: 'myapp_Summary response time in seconds',
+    percentiles: [0.5, 0.9, 0.99] //the fastest to the slowest response time φ-quantiles, where 0 ≤ φ ≤ 1, 0.5 is the 50th percentile or median
+});
+
+app.get('/', function (req, res) {
+    summary.observe(Math.random()); // simulate 0 to 1
+    
+    res.send('hello');
+});
+```
+
+### Histogram queries
+
+- Instant vector or get current counter for current timestamp `<counter name>`.
+
+the value buckets are set in instrumentation with promql client, like so:
+```node
+// install express
+// npm install --save express
+var express = require('express');
+var app = express();
+
+// install prometheus client 
+// npm install --save prom-client
+var client = require('prom-client');
+
+const summary = new client.Summary({
+    name: 'myapp_summary_response_time',
+    help: 'myapp_Summary response time in seconds',
+    percentiles: [0.5, 0.9, 0.99] //the fastest to the slowest response time φ-quantiles, where 0 ≤ φ ≤ 1, 0.5 is the 50th percentile or median
+});
+
+const histogram = new client.Histogram({
+    name: 'myapp_response_time',
+    help: 'Response time in seconds',
+    buckets: [0.1, 0.2, 0.3, 0.4, 0.5] // if we comment this line, prom-client will auto generate buckets lower or equal le=0.005 sec, 0.01 sec, 0.025 sec, 0.05 sec, 1 sec, 2.5 sec, 5 sec, 10 sec and +Inf which are useful for measuring http APIs
+});
+
+app.get('/', function (req, res) {
+    histogram.observe(Math.random()); // simulate 0 to 1
+    
+    res.send('hello');
+});
+```
