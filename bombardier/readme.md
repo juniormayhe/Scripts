@@ -19,3 +19,9 @@ Statistics        Avg      Stdev        Max
     others - 0
   Throughput:    21.87KB/s
 ```
+
+## Run from docker container
+
+```
+docker run -it --rm --name bombardier alpine/bombardier -k -H 'Content-Type: application/json' -m GET -c 200 -n 30 -l https://<ip>:<port>/api
+```
