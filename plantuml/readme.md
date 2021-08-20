@@ -11,6 +11,13 @@ The motivation for choosing to document business flows with [PlantUML](https://p
 - prevents engineers from using mouse-based tools like Confluence or 3rd party tools to design static diagrams that can be hard to find and maintain.
 - can help automation teams create tools or scripts around business processes documented as code. For example, scripts could define SLOs for a particular business flow already documented in PlantUML.
 
+## Render Plant UML in GitLab or GitHub
+
+Pretty straigthforward:
+```md
+![Example](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/juniormayhe/Scripts/master/plantuml/example.puml)
+```
+
 ## Useful links 🔗
  
 ### IDE plugins
