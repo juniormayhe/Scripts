@@ -1,3 +1,24 @@
+= Using plantuml in AsciiDoc on GitHub
+:author: David Buret
+:source-highlighter: pygments
+:pygments-style: github
+:icons: font
+:sectnums:
+:toclevels: 4
+:toc:
+:imagesdir: images/
+:toc-title: Sommaire
+:gitplant: http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/DBuret/journal/master/
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+image::{gitplant}/test.puml[PlantUML Image]
+
 # Business flows
 
 ![](https://raw.githubusercontent.com/juniormayhe/Scripts/master/plantuml/plantuml.gif)
