@@ -13,10 +13,11 @@ The motivation for choosing to document business flows with [PlantUML](https://p
 
 ## Render Plant UML in GitLab or GitHub
 
-Pretty straigthforward:
+Pretty straigthforward for public domains.
 ```md
 ![Example](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/juniormayhe/Scripts/master/plantuml/example.puml)
 ```
+If you cannot expose puml to an external/public proxy, you can use your own plantuml server to proxy puml files for rendering diagrams.
 
 ## Useful links 🔗
  
