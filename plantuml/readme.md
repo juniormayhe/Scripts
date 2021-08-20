@@ -68,5 +68,5 @@ myapi --> mydep
 client2  -> myapi : (02)
 
 @enduml
-
 ```
+![Example](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/juniormayhe/Scripts/master/plantuml/example.puml)
