@@ -1,5 +1,7 @@
 # Business flows
 
+![](https://raw.githubusercontent.com/juniormayhe/Scripts/master/plantuml/plantuml.gif)
+
 ## Diagrams as code
 
 The motivation for choosing to document business flows with [PlantUML](https://plantuml.com) diagrams is because its format:
@@ -30,3 +32,41 @@ The motivation for choosing to document business flows with [PlantUML](https://p
 
 ## Examples
 - [Real world Plant UML](https://real-world-plantuml.com)
+
+## Template
+
+```puml
+@startuml My business process
+header Title presented on the right
+
+skinparam {
+  componentBorderColor #black
+  arrowThickness 2
+  legendBackgroundColor #white
+  nodeBorderColor #gray
+}
+
+legend center
+|= Step   |= Description |= Action |
+| (01) | Describe \n your business flow for external client | HTTP GET /v1/ControllerName/{id} |
+| (02) | Describe \n your business flow for another external client | HTTP GET /v1/AnotherControllerName/{id} |
+endlegend
+
+' external components
+component "external-client" as client
+component "external-client-2" as client2
+
+node "My applications boundary" {
+  component "my-api" as myapi
+  component "my-dependency" as mydep
+}
+
+' the flows
+client -> myapi : (01)
+myapi --> mydep
+
+client2  -> myapi : (02)
+
+@enduml
+
+```
