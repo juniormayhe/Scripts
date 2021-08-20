@@ -11,7 +11,7 @@ The motivation for choosing to document business flows with [PlantUML](https://p
 
 ## Useful links 🔗
  
-## IDE plugins
+### IDE plugins
 - [PlantUML extension for Visual Code](https://marketplace.visualstudio.com/items?itemName=jebbs.plantuml)
 - [PlantUML for Visual Studio](https://marketplace.visualstudio.com/items?itemName=KieranBorsden.PlantUmlLanguageService)
 
