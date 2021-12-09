@@ -78,3 +78,104 @@ client2  -> myapi : (02)
 @enduml
 ```
 ![Example](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/juniormayhe/Scripts/master/plantuml/example.puml)
+
+## Export to png
+
+batch
+```bat
+REM How to use: powershell .\export.bat help
+set _pass=1
+
+@echo off
+echo Copyright (C) Farfetch. All rights reserved.
+echo Exports a puml file to png format. Requires Java installed and plantuml.jar.
+echo.
+goto checkPumlFile
+
+:help
+echo Usage:
+echo        export.ps1 ^<puml file^> ^<png dir^>
+echo.
+echo The arguments are:
+echo.
+echo        ^<puml file^>       the input PlantUML file path and name
+echo        ^<png dir^>         the output PNG dir
+echo.
+goto :eof
+
+:checkPumlFile
+if "%1"=="help" goto :help
+if "%1"=="" goto pumlMissing
+
+:checkPngDir
+if "%2"=="" goto pngMissing
+
+:run
+if %_pass%==0 (
+    echo Use "export.bat ^<help^>" for more information about this exporter.
+    goto :eof
+)
+
+set _pumlFile=%1
+set _pngDir=%2
+echo Input: %_pumlFile%
+echo Output: %_pngDir%
+
+java -jar .\plantuml.jar %_pumlFile% -o %_pngDir% -progress
+echo.
+echo.
+echo Done.
+
+goto :eof
+
+:pumlMissing
+echo - Please enter the input PlantUML path and file name. 
+set _pass=0
+goto checkPngDir
+
+:pngMissing
+echo - Please enter the output PNG dir
+echo.
+set _pass=0
+goto :eof
+```
+
+Powershell
+```ps
+#How to use: powershell .\export.ps1 help
+param (
+    [string]$pumlFile,
+    [string]$pngDir
+)
+
+Write-Host "Copyright (C) Farfetch. All rights reserved."
+Write-Host "Exports a puml file to png format. Requires Java installed and plantuml.jar.`n"
+
+if ($pumlFile -eq "help") {
+    Write-Host "Usage:`n"
+    Write-Host "        export.ps1 <puml file> <png dir>`n" -ForegroundColor Yellow
+    Write-Host "The arguments are:`n"
+    Write-Host "        <puml file>        the input PlantUML file path and name"
+    Write-Host "        <png dir>         the output PNG path`n"
+    exit
+}
+
+$isValid = 1
+if ($pumlFile -eq $null -or $pumlFile -eq "") {
+    Write-Host "- Please enter the input PlantUML path and file name." -ForegroundColor Red   
+    $isValid = 0
+}
+
+if ($pngDir -eq $null -or $pngDir -eq "") {
+    Write-Host "- Please enter the output PNG dir." -ForegroundColor Red   
+    $isValid = 0
+}
+
+if ($isValid -eq 1) {
+    Write-Host "Input: $($pumlFile)"
+    Write-Host "Output: $($pngDir)"
+    java -jar .\plantuml.jar "$($pumlFile)" -o "$($pngDir)" -progress
+}
+
+Write-Host "`nDone."
+```
