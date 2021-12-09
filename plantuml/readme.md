@@ -87,7 +87,6 @@ REM How to use: powershell .\export.bat help
 set _pass=1
 
 @echo off
-echo Copyright (C) Farfetch. All rights reserved.
 echo Exports a puml file to png format. Requires Java installed and plantuml.jar.
 echo.
 goto checkPumlFile
@@ -148,7 +147,6 @@ param (
     [string]$pngDir
 )
 
-Write-Host "Copyright (C) Farfetch. All rights reserved."
 Write-Host "Exports a puml file to png format. Requires Java installed and plantuml.jar.`n"
 
 if ($pumlFile -eq "help") {
