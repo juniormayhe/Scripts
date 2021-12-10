@@ -203,6 +203,8 @@ if [[ -n $pumlFile && $pumlFile == "help" ]]; then
     echo -e "The arguments are:\n"
     echo "        <puml file>       the input PlantUML file path and name"
     echo -e "        <png dir>         the output PNG path\n"
+    echo -e "Example:"
+    echo -e "       ./export.sh test.puml .\n"
     exit 0
 fi
 
