@@ -81,6 +81,8 @@ client2  -> myapi : (02)
 
 ## Export to png
 
+Where you read [91m it will show up in vscode as ESC[91m. And ESC[m resets the color to default
+
 batch
 ```bat
 REM How to use: .\export.bat help
