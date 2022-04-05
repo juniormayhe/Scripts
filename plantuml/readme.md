@@ -90,7 +90,7 @@ REM export.bat test.puml .\
 set _pass=1
 
 @echo off
-echo [mCopyright (C) Farfetch. All rights reserved.
+echo [mCopyright (C) Junior Mayhe. All rights reserved.
 echo Exports a puml file to png format. Requires Java installed and plantuml.jar.
 echo.
 goto checkPumlFile
