@@ -155,7 +155,7 @@ param (
     [string]$pngDir
 )
 
-Write-Host "Copyright (C) Farfetch. All rights reserved."
+Write-Host "Copyright (C) Junior Mayhe. All rights reserved."
 Write-Host "Exports a puml file to png format. Requires Java installed and plantuml.jar.`n"
 
 if ($pumlFile -eq "help") {
