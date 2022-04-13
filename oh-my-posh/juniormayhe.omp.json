@@ -42,7 +42,7 @@
         },
         {
           "background": "#e16162",
-          "foreground": "#EFDCF9",
+          "foreground": "#e16162",
           "powerline_symbol": "\ue0b0",
           "properties": {
             "branch_max_length": 25,
