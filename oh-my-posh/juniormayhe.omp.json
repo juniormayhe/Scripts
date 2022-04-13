@@ -41,7 +41,7 @@
           "type": "path"
         },
         {
-          "background": "#341948",
+          "background": "#e16162",
           "foreground": "#EFDCF9",
           "powerline_symbol": "\ue0b0",
           "properties": {
