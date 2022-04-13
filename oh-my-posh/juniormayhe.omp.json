@@ -5,7 +5,7 @@
       "alignment": "left",
       "segments": [
 	  {
-          "background": "#4E1854",
+          "background": "#EFDCF9",
           "foreground": "#EFDCF9",
           "properties": {
             "arch": "\uf303",
@@ -24,7 +24,7 @@
 	  "powerline_symbol": "\uE0B0",
         },
         {
-          "background": "#4E1854",
+          "background": "#EFDCF9",
           "foreground": "#EFDCF9",
           "powerline_symbol": "\ue0b0",
           "style": "powerline",
