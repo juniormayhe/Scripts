@@ -16,7 +16,7 @@
             "manjaro": "\u2318",
             "opensuse": "\u2318",
             "ubuntu": "\u2318",
-            "windows": "\u2318"
+            "windows": "⌘"
           },
           "style": "diamond",
           "template": " {{ if .WSL }}WSL at {{ end }}{{.Icon}} ",
