@@ -5,7 +5,7 @@
       "alignment": "left",
       "segments": [
 	  {
-          "background": "#4e1854",
+          "background": "#4E1854",
           "foreground": "#EFDCF9",
           "properties": {
             "arch": "\uf303",
