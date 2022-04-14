@@ -6,9 +6,15 @@
 - Enable USB debugging
 
 ## In Windows 10
-- Install Android SDK (plataform tools)
-- Run adb at C:\Program Files (x86)\Android\android-sdk\platform-tools
+- Install Android Studio (which has platform tools)
+- Run adb at C:\Users\junio\AppData\Local\Android\Sdk\platform-tools
 
+## Configure
+```
+C:\WINDOWS\system32>set ANDROID_PLATFORM_TOOLS="C:\Users\junio\AppData\Local\Android\Sdk\platform-tools"
+C:\WINDOWS\system32>set ANDROID_TOOLS="C:\Users\junio\AppData\Local\Android\Sdk\build-tools\32.1.0-rc1"
+C:\WINDOWS\system32>set path=%path%;%ANDROID_PLATFORM_TOOLS%;%ANDROID_TOOLS%
+```
 # List apps / packages
 ```
 adb shell pm list packages
