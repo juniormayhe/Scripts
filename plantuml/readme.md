@@ -79,6 +79,10 @@ client2  -> myapi : (02)
 ```
 ![Example](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/juniormayhe/Scripts/master/plantuml/example.puml)
 
+## Dependencies for exporting to image
+- Java
+- [PlantUML jar file](https://github.com/plantuml/plantuml/releases/tag/v1.2022.4)
+
 ## Export to png
 
 Where you read [91m it will show up in vscode as ESC[91m. And ESC[m resets the color to default
