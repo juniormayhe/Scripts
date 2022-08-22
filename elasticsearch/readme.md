@@ -1,8 +1,18 @@
 # Elasticsearch
 
 ## Query input (logz.io)
-this seems to act like an OR where any page with v3 or any page with labels shows up
 
+only pages containing labels
+```
+page: .*/labels/.*
+```
+matches:
+- /transportation/v1/10000/transports/labels/download/123
+- /transportation/v1/labels/123
+- /transportation/v3/transports/123/labels
+- /transportation/v1/10000/transports/labels/123
+
+this following is inaccurate because acts like an OR where any page with v3 or any page with labels shows up
 ```
 page: /transportation/v3/transports//.*/labels//.*
 ```
