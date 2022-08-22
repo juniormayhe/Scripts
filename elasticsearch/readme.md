@@ -1,6 +1,6 @@
 # Elasticsearch
 
-# Query input (logz.io)
+## Query input (logz.io)
 this seems to act like an OR where any page with v3 or any page with labels shows up
 
 ```
