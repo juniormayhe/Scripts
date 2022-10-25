@@ -44,5 +44,5 @@ git add . && git commit -m "readme added" && git push origin master
 
 # Remove local branches not in remote
 ```
-git branch --merged origin/master | grep -v master | xargs git branch -d
+git fetch -p && git branch --merged origin/master | grep -v master | xargs git branch -d
 ```
