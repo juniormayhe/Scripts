@@ -37,12 +37,12 @@ git config --local user.email "juniormayhe@gmail.com"
 git config --local user.name "Junior Mayhe"
 ```
 
-Upload files from local git to github
+# Upload files from local git to github
 ```
 git add . && git commit -m "readme added" && git push origin master
 ```
 
-Remove local branches not in remote
+# Remove local branches not in remote
 ```
 git branch --merged origin/master | grep -v master | xargs git branch -d
 ```
