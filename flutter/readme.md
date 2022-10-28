@@ -32,6 +32,12 @@ Doctor summary (to see all details, run flutter doctor -v):
 
 ! Doctor found issues in 4 categories.
 ```
+
+## Set Edge as browser with powershell
+```
+SetX CHROME_EXECUTABLE "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+```
+
 ## Download and install Android Studio
 
 We must install the flutter and dart plugins in Android Studio.
