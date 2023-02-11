@@ -196,3 +196,8 @@ Forced shutdown
 ```
 kill -s 15 $(pidof dotnet)
 ```
+
+## Limit log file
+```
+docker run -d --restart=always -e VAR1=value --log-driver json-file --log-opt max-size=15m --log-opt max-file=5 --name yourname your/package:latest
+```
