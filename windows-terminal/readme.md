@@ -1,3 +1,9 @@
+## Copy and overwrite
+```
+Copy-Item -Path "G:\My Drive\shield-data\*" -Destination "C:\Users\wanderley.junior\myapp\src\data\" -Force
+```
+
+
 # git bash in windows terminal
 
 %LOCALAPPDATA%\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState
