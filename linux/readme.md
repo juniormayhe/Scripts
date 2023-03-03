@@ -8,3 +8,11 @@ Useful scripts and common tasks for daily use.
 ```
 locate *.cs | xargs grep -rl MyMethod
 ```
+
+## Copy and overwrite
+```
+#!/bin/bash
+
+cp -rf /G/My\ Drive/shield-data/* /c/Users/wanderley.junior/myapp/src/data/
+```
+
