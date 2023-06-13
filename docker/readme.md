@@ -201,3 +201,23 @@ kill -s 15 $(pidof dotnet)
 ```
 docker run -d --restart=always -e VAR1=value --log-driver json-file --log-opt max-size=15m --log-opt max-file=5 --name yourname your/package:latest
 ```
+
+## Change port of running docker container from 5000 to 5001
+```
+> docker ps -a
+CONTAINER ID   IMAGE               COMMAND          CREATED        STATUS                     PORTS     NAMES
+<id>           your/image:latest   "dotnet App.…"   4 months ago   Exited (0) 5 seconds ago             identity-server-mock
+
+❯ docker stop <id>
+<id>
+
+❯ docker commit identity-server-mock identity-image-5001
+sha256:<image id>
+
+❯ docker images
+REPOSITORY                                                                            TAG       IMAGE ID       CREATED          SIZE
+identity-image-5001                                                                   latest    <image id>     17 seconds ago   479MB
+
+❯ docker run -d -p 5001:5000 --name identity-5001 identity-image-5001
+<new id>
+```
