@@ -37,7 +37,7 @@ function ToCSUUID(binaryId) {
   return csuuid;
 }
 
-print("-- Results");
+print("-- Results --------------------------------------------");
 print("  - Original Id:");
 print("    └ BSON id: \t\t\t\t" + id);
 print("  - Converted to GUIDs:");
