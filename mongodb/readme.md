@@ -44,3 +44,12 @@ print("  - Converted to GUIDs:");
 print("    └ JSON guid: \t\t\t" + guid);
 print("    └ CSharp UUID (CSUUID):\t" + ToCSUUID( UUID(bin.buffer.toString("hex"))) );
 ```
+
+## Find items whose ID is not found in another collection
+```js
+db.getCollection("CollectionA").find({
+  MyId: {
+    $nin: db.getCollection("CollectionB").distinct("MyId")
+  }
+})
+```
