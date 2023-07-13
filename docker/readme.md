@@ -221,3 +221,46 @@ identity-image-5001                                                             
 ❯ docker run -d -p 5001:5000 --name identity-5001 identity-image-5001
 <new id>
 ```
+
+## Building an image with args and running container
+Supposing you have a Dockerfile with args
+```dockerfile
+FROM artifacts-we1.test.net/test-docker-base-we1/test/dotnet:runtime-2.2.3 as base
+WORKDIR /app
+USER root
+EXPOSE 5001
+
+FROM artifacts-we1.test.net/test-docker-base-we1/test/dotnet:sdk-2.2.202 as build
+ARG ARTIFACTORY_USERNAME
+ARG ARTIFACTORY_PASSWORD
+USER root
+WORKDIR /src
+
+RUN echo "<?xml version=\"1.0\" encoding=\"utf-8\"?><configuration><packageSources><add key=\"Nuget\" value=\"https://api.nuget.org/v3/index.json\" /><add key=\"ArtifactoryDev\" value=\"https://artifacts-we1.test.net/artifactory/api/nuget/nuget-beta/\" /><add key=\"Artifactory\" value=\"https://artifacts-we1.test.net/artifactory/api/nuget/nuget-stable/\" /></packageSources><packageSourceCredentials><ArtifactoryDev><add key=\"Username\" value=\"$ARTIFACTORY_USERNAME\" /><add key=\"ClearTextPassword\" value=\"$ARTIFACTORY_PASSWORD\" /></ArtifactoryDev><Artifactory><add key=\"Username\" value=\"$ARTIFACTORY_USERNAME\" /><add key=\"ClearTextPassword\" value=\"$ARTIFACTORY_PASSWORD\" /></Artifactory></packageSourceCredentials></configuration>" > ./NuGet.config    	
+COPY ["src/Test.IdentityServerMock/Test.IdentityServerMock.csproj", "src/Test.IdentityServerMock/"]
+RUN dotnet restore "src/Test.IdentityServerMock/Test.IdentityServerMock.csproj"
+COPY . .
+WORKDIR "/src/src/Test.IdentityServerMock"
+RUN dotnet build "Test.IdentityServerMock.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "Test.IdentityServerMock.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+
+ENV ASPNETCORE_URLS=http://+:5001
+
+ENTRYPOINT ["dotnet", "Test.IdentityServerMock.dll"]
+```
+
+Build the image
+```bash
+docker build --build-arg ARTIFACTORY_USERNAME=junior --build-arg ARTIFACTORY_PASSWORD=******* -t identity .
+```
+
+Run the image
+```bash
+docker run -d -p 5001:5001 --restart=always --log-driver json-file --log-opt max-size=15m --log-opt max-file=5 --name identity identity
+```
