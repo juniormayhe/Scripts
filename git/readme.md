@@ -46,3 +46,49 @@ git add . && git commit -m "readme added" && git push origin master
 ```
 git fetch -p && git branch --merged origin/master | grep -v master | xargs git branch -d
 ```
+
+# Interactive rebase to avoid Push failed gitiquette validations
+
+```sh
+#!/bin/bash
+
+# Function to handle errors
+function handle_error {
+  echo "Error: Command failed. Performing recovery steps..."
+  git rebase --abort
+  git reset --hard
+  git reset --hard "$current_branch"
+  echo "Recovery steps executed successfully."
+  exit 1
+}
+
+# Get the current branch name
+current_branch=$(git symbolic-ref --short HEAD)
+
+# If an argument is provided, use it as the current branch
+if [ -n "$1" ]; then
+  current_branch="$1"
+  git checkout "$current_branch"
+fi
+
+# Run the commands in the specified sequence without confirmation
+echo "fetching..."
+git fetch || handle_error
+
+echo "pulling..."
+git pull || handle_error
+
+echo "fetching master..."
+git fetch origin master:master || handle_error
+
+echo "interactive rebasing..."
+git rebase -i origin/master
+
+echo "continue rebasing..."
+git rebase --continue
+
+echo "push changes..."
+git push -f origin "$current_branch" || handle_error
+
+echo "Script executed successfully."
+```
