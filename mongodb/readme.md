@@ -53,3 +53,30 @@ db.getCollection("CollectionA").find({
   }
 })
 ```
+## Copy database
+```js
+// Drop the new database if it already exists
+var oldDb = 'OLD_DB';
+var targetDatabase = 'NEW_DB';
+if (db.getMongo().getDBNames().indexOf(targetDatabase) !== -1) {
+  print("Dropping existing database: " + targetDatabase);
+  db.getSiblingDB(targetDatabase).dropDatabase();
+}
+
+use (targetDatabase);
+
+// Get the list of collections from the old database
+var oldCollections = db.getSiblingDB(oldDb).getCollectionNames();
+
+// Copy each collection from the old database to the new one
+oldCollections.forEach(function(collectionName) {
+  var sourceCollection = db.getSiblingDB(oldDb)[collectionName];
+  var targetCollection = db[collectionName];
+
+  // Regular collections can be copied using find and insert
+  sourceCollection.find().forEach(function(doc) {
+      targetCollection.insert(doc);
+  });
+    
+});
+```
