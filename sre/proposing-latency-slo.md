@@ -75,7 +75,7 @@ The most common percentiles used by industry using quantile function Φ\^(-1)(pe
 | 97.00          | 1.880        |
 | 95.00          | 1.645        |
 | 90.00          | 1.282        |
-| 50.00\*        | 0            |
+| 50.00*        | 0            |
 
 *\* in normal distribution, 50.00 stands for the median: 50% of data points fall below and above the mean (average).*
 
