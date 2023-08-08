@@ -23,16 +23,16 @@ Calculate the average (mean) of these measurements to obtain 33.25 seconds.
 
 To assess if this 33.25s is a trustworthy candidate for the new latency SLO, calculate the variance for each measurement. The variance is the sum of the squared differences between each duration and the mean (33.25 seconds), divided by the total number of observed periods:
 ```
-Variance = (((1st p95 result - mean result)\^2) + ((2nd p95 result - mean result)\^2) + ...) ÷ Count(set) =\> 179.44 seconds squared.
+Variance = (((1st p95 result - mean result)\^2) + ((2nd p95 result - mean result)\^2) + ...) ÷ Count(set) => 179.44 seconds squared.
 ```
 
 To check the consistency or trustworthiness of the mean (33.25), calculate the square root of the variance, which is known as the standard deviation. The standard deviation measures the variability of the measurements. If the standard deviation is high, it could indicate that the durations are not consistent over time:
 ```
-Standard deviation** = √Variance =\> 13.40 seconds.
+Standard deviation** = √Variance => 13.40 seconds.
 ```
 Calculate the Coefficient of Variation by dividing the standard deviation by the mean. This will produce a ratio expressed as a percentage:
 ```
-Coefficient of variation %** = (standard deviation ÷ mean) \* 100 =\> 13.40 ÷ 33.25 =\> 40.28%.
+Coefficient of variation %** = (standard deviation ÷ mean) * 100 => 13.40 ÷ 33.25 => 40.28%.
 ```
 
 This indicates that the mean is not consistent with the measurements and would not be a suitable proposal for an SLO. The variation is over 40%.
@@ -46,7 +46,7 @@ We have two approaches to propose an SLO.
 Once the average of the measurements is calculated and if they exhibit **low volatility**, an additional buffer of around 20% could be introduced to accommodate unexpected variations.
 
 ```
-Proposed Latency SLO = mean \* (1 + 20%) =\> 33.25 \* 1.2 =\> 39.90 seconds
+Proposed Latency SLO = mean * (1 + 20%) => 33.25 * 1.2 => 39.90 seconds
 ```
 
 ### Approach \#2: Add coefficient of variation to the mean
@@ -56,7 +56,7 @@ One reasonable way to propose the new SLO is by adding the **coefficient of vari
 Thus, the new proposed latency SLO would be calculated as follows:
 
 ```
-Proposed Latency SLO** = mean + (mean \* (1 + Coefficient of variation%)) \* (1 + 20%) =\> 33.25 \* (1 + 40.28%) \* (1 + 20%) =\> 33.25 \* 1.4028 \* 1.2 =\> 55.97 seconds
+Proposed Latency SLO** = mean + (mean * (1 + Coefficient of variation%)) * (1 + 20%) => 33.25 * (1 + 40.28%) * (1 + 20%) => 33.25 * 1.4028 * 1.2 => 55.97 seconds
 ```
 
 ### Approach \#3: Add the product of zScore and standard deviation to the mean**
@@ -83,6 +83,6 @@ Some other available zScore for percentiles
 
 If we pick 95th percentile from the table, we will get zScore of 1.645. We will use it in the following formula to get a proposed SLO.
 ```
-Proposed Latency SLO = average + (zScore scaling factor \* standard deviation) =\> 33.25 secs + (1.645 \* 13.40 secs) =\> 55.29 seconds.
+Proposed Latency SLO = average + (zScore scaling factor * standard deviation) => 33.25 secs + (1.645 * 13.40 secs) => 55.29 seconds.
 ```
 This calculation ensures that the SLO takes into account the variability of the data (standard deviation) and sets the threshold for the SLO accordingly, providing a more realistic and effective SLO for the given dataset.
