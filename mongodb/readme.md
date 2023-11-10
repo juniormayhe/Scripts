@@ -44,6 +44,25 @@ print("  - Converted to GUIDs:");
 print("    └ JSON guid: \t\t\t" + guid);
 print("    └ CSharp UUID (CSUUID):\t" + ToCSUUID( UUID(bin.buffer.toString("hex"))) );
 ```
+## Convert UUID to BinData
+```js
+function ToBinData(uuid) {
+  var buffer = Buffer.from(uuid.replace(/-/g, ''), 'hex');
+
+  var binData = Binary(3,buffer);
+
+  return binData;
+}
+
+var uuid = "44e201f5-a5a9-468c-a40b-8e133e4b6fa9";
+var binData = ToBinData(uuid);
+
+print("-- Results --------------------------------------------");
+print("  - Original UUID:");
+print("    └ UUID: \t\t\t\t" + uuid);
+print("  - Converted to BinData:");
+print("    └ BinData(3, id): \t\t" + binData.buffer.toString('base64'));
+```
 
 ## Find items whose ID is not found in another collection
 ```js
