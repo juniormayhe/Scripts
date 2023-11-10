@@ -42,14 +42,14 @@ print("  - Original Id:");
 print("    └ BSON id: \t\t\t\t" + id);
 print("  - Converted to GUIDs:");
 print("    └ JSON guid: \t\t\t" + guid);
-print("    └ CSharp UUID (CSUUID):\t" + ToCSUUID( UUID(bin.buffer.toString("hex"))) );
+// print("    └ CSharp UUID (CSUUID):\t" + ToCSUUID( UUID(bin.buffer.toString("hex"))) );
 ```
 ## Convert UUID to BinData
 ```js
 function ToBinData(uuid) {
   var buffer = Buffer.from(uuid.replace(/-/g, ''), 'hex');
 
-  var binData = Binary(3,buffer);
+  var binData = Binary(buffer, 3);
 
   return binData;
 }
