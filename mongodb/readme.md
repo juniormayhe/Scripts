@@ -46,22 +46,134 @@ print("    └ JSON guid: \t\t\t" + guid);
 ```
 ## Convert UUID to BinData
 ```js
-function ToBinData(uuid) {
-  var buffer = Buffer.from(uuid.replace(/-/g, ''), 'hex');
-
-  var binData = Binary(buffer, 3);
-
-  return binData;
+function HexToBase64(hex) {
+    var base64Digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    var base64 = "";
+    var group;
+    for (var i = 0; i < 30; i += 6) {
+        group = parseInt(hex.substr(i, 6), 16);
+        base64 += base64Digits[(group >> 18) & 0x3f];
+        base64 += base64Digits[(group >> 12) & 0x3f];
+        base64 += base64Digits[(group >> 6) & 0x3f];
+        base64 += base64Digits[group & 0x3f];
+    }
+    group = parseInt(hex.substr(30, 2), 16);
+    base64 += base64Digits[(group >> 2) & 0x3f];
+    base64 += base64Digits[(group << 4) & 0x3f];
+    base64 += "==";
+    return base64;
 }
 
-var uuid = "44e201f5-a5a9-468c-a40b-8e133e4b6fa9";
-var binData = ToBinData(uuid);
+function Base64ToHex(base64) {
+    var base64Digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+    var hexDigits = "0123456789abcdef";
+    var hex = "";
+    for (var i = 0; i < 24; ) {
+        var e1 = base64Digits.indexOf(base64[i++]);
+        var e2 = base64Digits.indexOf(base64[i++]);
+        var e3 = base64Digits.indexOf(base64[i++]);
+        var e4 = base64Digits.indexOf(base64[i++]);
+        var c1 = (e1 << 2) | (e2 >> 4);
+        var c2 = ((e2 & 15) << 4) | (e3 >> 2);
+        var c3 = ((e3 & 3) << 6) | e4;
+        hex += hexDigits[c1 >> 4];
+        hex += hexDigits[c1 & 15];
+        if (e3 != 64) {
+            hex += hexDigits[c2 >> 4];
+            hex += hexDigits[c2 & 15];
+        }
+        if (e4 != 64) {
+            hex += hexDigits[c3 >> 4];
+            hex += hexDigits[c3 & 15];
+        }
+    }
+    return hex;
+}
 
-print("-- Results --------------------------------------------");
-print("  - Original UUID:");
-print("    └ UUID: \t\t\t\t" + uuid);
-print("  - Converted to BinData:");
-print("    └ BinData(3, id): \t\t" + binData.buffer.toString('base64'));
+function UUID(uuid) {
+    var hex = uuid.replace(/[{}-]/g, ""); // remove extra characters
+    var base64 = HexToBase64(hex);
+    return new BinData(4, base64); // new subtype 4
+}
+
+function JUUID(uuid) {
+    var hex = uuid.replace(/[{}-]/g, ""); // remove extra characters
+    var msb = hex.substr(0, 16);
+    var lsb = hex.substr(16, 16);
+    msb = msb.substr(14, 2) + msb.substr(12, 2) + msb.substr(10, 2) + msb.substr(8, 2) + msb.substr(6, 2) + msb.substr(4, 2) + msb.substr(2, 2) + msb.substr(0, 2);
+    lsb = lsb.substr(14, 2) + lsb.substr(12, 2) + lsb.substr(10, 2) + lsb.substr(8, 2) + lsb.substr(6, 2) + lsb.substr(4, 2) + lsb.substr(2, 2) + lsb.substr(0, 2);
+    hex = msb + lsb;
+    var base64 = HexToBase64(hex);
+    return new BinData(3, base64);
+}
+
+function CSUUID(uuid) {
+    var hex = uuid.replace(/[{}-]/g, ""); // remove extra characters
+    var a = hex.substr(6, 2) + hex.substr(4, 2) + hex.substr(2, 2) + hex.substr(0, 2);
+    var b = hex.substr(10, 2) + hex.substr(8, 2);
+    var c = hex.substr(14, 2) + hex.substr(12, 2);
+    var d = hex.substr(16, 16);
+    hex = a + b + c + d;
+    var base64 = HexToBase64(hex);
+    return new BinData(3, base64);
+}
+
+function PYUUID(uuid) {
+    var hex = uuid.replace(/[{}-]/g, ""); // remove extra characters
+    var base64 = HexToBase64(hex);
+    return new BinData(3, base64);
+}
+
+BinData.prototype.toUUID = function () {
+    var hex = Base64ToHex(this.base64()); // don't use BinData's hex function because it has bugs in older versions of the shell
+    var uuid = hex.substr(0, 8) + '-' + hex.substr(8, 4) + '-' + hex.substr(12, 4) + '-' + hex.substr(16, 4) + '-' + hex.substr(20, 12);
+    return 'UUID("' + uuid + '")';
+}
+
+BinData.prototype.toJUUID = function () {
+    var hex = Base64ToHex(this.base64()); // don't use BinData's hex function because it has bugs in older versions of the shell
+    var msb = hex.substr(0, 16);
+    var lsb = hex.substr(16, 16);
+    msb = msb.substr(14, 2) + msb.substr(12, 2) + msb.substr(10, 2) + msb.substr(8, 2) + msb.substr(6, 2) + msb.substr(4, 2) + msb.substr(2, 2) + msb.substr(0, 2);
+    lsb = lsb.substr(14, 2) + lsb.substr(12, 2) + lsb.substr(10, 2) + lsb.substr(8, 2) + lsb.substr(6, 2) + lsb.substr(4, 2) + lsb.substr(2, 2) + lsb.substr(0, 2);
+    hex = msb + lsb;
+    var uuid = hex.substr(0, 8) + '-' + hex.substr(8, 4) + '-' + hex.substr(12, 4) + '-' + hex.substr(16, 4) + '-' + hex.substr(20, 12);
+    return 'JUUID("' + uuid + '")';
+}
+
+BinData.prototype.toCSUUID = function () {
+    var hex = Base64ToHex(this.base64()); // don't use BinData's hex function because it has bugs in older versions of the shell
+    var a = hex.substr(6, 2) + hex.substr(4, 2) + hex.substr(2, 2) + hex.substr(0, 2);
+    var b = hex.substr(10, 2) + hex.substr(8, 2);
+    var c = hex.substr(14, 2) + hex.substr(12, 2);
+    var d = hex.substr(16, 16);
+    hex = a + b + c + d;
+    var uuid = hex.substr(0, 8) + '-' + hex.substr(8, 4) + '-' + hex.substr(12, 4) + '-' + hex.substr(16, 4) + '-' + hex.substr(20, 12);
+    return 'CSUUID("' + uuid + '")';
+}
+
+BinData.prototype.toPYUUID = function () {
+    var hex = Base64ToHex(this.base64()); // don't use BinData's hex function because it has bugs
+    var uuid = hex.substr(0, 8) + '-' + hex.substr(8, 4) + '-' + hex.substr(12, 4) + '-' + hex.substr(16, 4) + '-' + hex.substr(20, 12);
+    return 'PYUUID("' + uuid + '")';
+}
+
+BinData.prototype.toHexUUID = function () {
+    var hex = Base64ToHex(this.base64()); // don't use BinData's hex function because it has bugs
+    var uuid = hex.substr(0, 8) + '-' + hex.substr(8, 4) + '-' + hex.substr(12, 4) + '-' + hex.substr(16, 4) + '-' + hex.substr(20, 12);
+    return 'HexData(' + this.subtype() + ', "' + uuid + '")';
+}
+
+// for compatibility with the new mongosh shell
+if (BinData.prototype.base64 === undefined && BinData.prototype.subtype === undefined) {
+    BinData.prototype.base64 = function() { return this.buffer.base64Slice(); };
+    BinData.prototype.subtype = function() { return this.sub_type; };
+}
+
+// Convert CSUUID("0412DC70-BAA7-484D-9748-859CB74F2B5C"), --> "cNwSBKe6TUiXSIWct08rXA=="
+var s = "0412DC70-BAA7-484D-9748-859CB74F2B5C";
+var csuuid = CSUUID(s);
+print(csuuid.base64());
 ```
 
 ## Find items whose ID is not found in another collection
@@ -98,4 +210,25 @@ oldCollections.forEach(function(collectionName) {
   });
     
 });
+```
+## Delete one
+```js
+var demoServiceId = new BinData(3, "DY85ZEcqnU2NdTziInJJWw=="); // UUID("64398f0d-2a47-4d9d-8d75-3ce22272495b");
+try {
+	db.getCollection("Services").deleteOne({ _id: demoServiceId });
+} catch (e) {
+	print(e);
+}
+```
+
+## Delete many
+```js
+var demoSloId = new BinData(3, "9QHiRKmljEakC44TPktvqQ=="); // UUID("44e201f5-a5a9-468c-a40b-8e133e4b6fa9");
+try {
+	db.getCollection("Slos").deleteMany({
+		"DefinitionUsed._id": demoSloId,
+	});
+} catch (e) {
+	print(e);
+}
 ```
