@@ -246,6 +246,7 @@ from pymongo import MongoClient
 from bson.binary import Binary
 
 def HexToBase64(hex_string):
+    #print("    hex string:", hex_string)
     base64_string = base64.b64encode(bytes.fromhex(hex_string)).decode()
     
     # Add padding if necessary
@@ -256,6 +257,7 @@ def HexToBase64(hex_string):
 
 
 def CSUUID(uuid_string):
+    #print("  converting:", uuid_string)
     # Remove extra characters
     uuid_string = uuid_string.replace('{', '').replace('}', '').replace('-', '')
     
@@ -270,8 +272,31 @@ def CSUUID(uuid_string):
     return HexToBase64(hex_string)
 
 def UUIDtoBinary(id):
+    #print("converting:", id)
     return Binary(base64.b64decode(CSUUID(id)), 3)
 
+def set_root_id_as_binary(doc):
+    # Use the 'id' property as the '_id' field
+    doc['_id'] = UUIDtoBinary(doc.get('id'))
+
+def convert_ids_to_binary(doc):
+    for key, value in doc.items():
+        
+        if isinstance(value, dict):
+            convert_ids_to_binary(value)  # Recursively check nested dictionaries
+        elif isinstance(value, list):
+            if key == "nodes":
+                # Iterate over each node dictionary in the list
+                for node in value:
+                    convert_ids_to_binary(node)  # Convert IDs in each node dictionary
+            elif key.endswith("ContactIds"):
+                # Convert each UUID string in the list to binary
+                doc[key] = [UUIDtoBinary(uuid_str) for uuid_str in value]
+        elif isinstance(value, str) and key == "id":
+            print("key is string "+key + " = " + value)
+            doc[key] = UUIDtoBinary(value)
+        elif isinstance(value, str) and key.endswith("Id") and not key == "slackChannelId" and not key == "jiraAccountId" and not key == "slackAccountId":
+            doc[key] = UUIDtoBinary(value)
 ```
 
 import.py
@@ -307,8 +332,9 @@ def add_documents(file_path):
     # Insert each document from the JSON array into the collection
     for doc in data:
         # Use the 'id' property as the '_id' field
-        doc['_id'] = UUIDtoBinary(doc.get('id'))
-
+        # doc['_id'] = UUIDtoBinary(doc.get('id'))
+        set_root_id_as_binary(doc)
+        convert_ids_to_binary(doc)
         if '_id' in doc:
             del doc['id']  # Remove 'id' field if present
         
