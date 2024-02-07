@@ -232,3 +232,103 @@ try {
 	print(e);
 }
 ```
+
+## Python import as binary
+utils.py
+```python
+import os
+import sys
+import json
+import base64
+import uuid
+
+from pymongo import MongoClient
+from bson.binary import Binary
+
+def HexToBase64(hex_string):
+    base64_string = base64.b64encode(bytes.fromhex(hex_string)).decode()
+    
+    # Add padding if necessary
+    while len(base64_string) % 4 != 0:
+        base64_string += '='
+    
+    return base64_string
+
+
+def CSUUID(uuid_string):
+    # Remove extra characters
+    uuid_string = uuid_string.replace('{', '').replace('}', '').replace('-', '')
+    
+    # Rearrange the hex string
+    a = uuid_string[6:8] + uuid_string[4:6] + uuid_string[2:4] + uuid_string[0:2]
+    b = uuid_string[10:12] + uuid_string[8:10]
+    c = uuid_string[14:16] + uuid_string[12:14]
+    d = uuid_string[16:]
+    hex_string = a + b + c + d
+    
+    # Convert hex to base64
+    return HexToBase64(hex_string)
+
+def UUIDtoBinary(id):
+    return Binary(base64.b64decode(CSUUID(id)), 3)
+
+```
+
+import.py
+```python
+import os
+import sys
+import json
+
+from pymongo import MongoClient
+from utils import UUIDtoBinary, HexToBase64, CSUUID
+
+
+def add_documents(file_path):
+    # MongoDB connection string
+    connection_string = "mongodb://localhost:27017/"
+    
+    # Connect to the MongoDB server
+    client = MongoClient(connection_string)
+    
+    # Select the database
+    database = client["SVC_SHIELD_LIVE"]
+    
+    # Select the collection
+    collection = database["AppService"]
+
+    # Drop existing collection documents
+    collection.drop()
+
+    # Open the JSON file and load the data
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+    
+    # Insert each document from the JSON array into the collection
+    for doc in data:
+        # Use the 'id' property as the '_id' field
+        doc['_id'] = UUIDtoBinary(doc.get('id'))
+
+        if '_id' in doc:
+            del doc['id']  # Remove 'id' field if present
+        
+        # Insert the document into the collection
+        collection.insert_one(doc)
+
+    print("added successfully!")
+
+if __name__ == "__main__":
+    # Set default file path if not provided
+    if len(sys.argv) == 2:
+        file_path = sys.argv[1]
+    else:
+        file_path = "C:\\temp\\services.json"
+    
+    # Check if the default file path exists
+    if not os.path.exists(file_path):
+        print(f"Error: File not found at the default path: {file_path}")
+        sys.exit(1)
+    
+    add_documents(file_path)
+
+```
