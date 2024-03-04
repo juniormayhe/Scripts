@@ -1,5 +1,10 @@
 # adds 1 second silence between files. needs ffmpeg
+# download c++ build tools if needed https://visualstudio.microsoft.com/visual-cpp-build-tools/
 # choco install ffmpeg
+# pyenv install 3.12.0
+# python -m pip install --no-cache-dir --force-reinstall pyaudio
+# pip install pydub
+
 from pydub import AudioSegment
 import os
 
