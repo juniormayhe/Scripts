@@ -12,7 +12,7 @@ prompt_user() {
 
     echo -e "${CYAN}"
     read -t "$timeout" -p "$message" user_input
-    echo -e "${NC}"
+    echo -e "${NO_COLOR}"
 
     if [ -n "$user_input" ]; then
         echo "Operation aborted."
@@ -37,8 +37,6 @@ display_error(){
     echo -e "${RED}ERROR: ${message}${NO_COLOR}"
 }
 
-display_header "TruLabelSAS - Making Kubernetes resources reachable to host computer..."
-
 is_port_in_use() {
     local port=$1
     if lsof -i:"$port" &>/dev/null; then
@@ -57,6 +55,15 @@ check_kubectl() {
     fi
 }
 
+cleanup() {
+    display_header "Stopping all port-forwarding processes..."
+    for pid in "${pids[@]}"; do
+        kill "$pid" 2>/dev/null
+    done
+    display_success "All processes stopped. Exiting."
+}
+
+
 setup_port_forwarding() {
 
     display_header "Setting up port forwarding"
@@ -69,7 +76,7 @@ setup_port_forwarding() {
     #kubectl port-forward svc/kafka 9092:9092 -n trulabelsas
 
     echo "Retrieving services from the Kubernetes cluster..."
-    services=$(kubectl get services -o jsonpath='{range .items[*]}{.metadata.name} {.spec.ports[0].port} {.spec.ports[0].targetPort} {.metadata.namespace}{"\n"}{end}')
+    services=$(kubectl get services -A -o jsonpath='{range .items[*]}{.metadata.name} {.spec.ports[0].port} {.spec.ports[0].targetPort} {.metadata.namespace}{"\n"}{end}')
 
     if [[ -z "$services" ]]; then
         display_error "No services found in the Kubernetes cluster."
@@ -123,15 +130,8 @@ setup_port_forwarding() {
     read -n 1 -s
 }
 
-cleanup() {
-    display_header "Stopping all port-forwarding processes..."
-    for pid in "${pids[@]}"; do
-        kill "$pid" 2>/dev/null
-    done
-    display_success "All processes stopped. Exiting."
-}
+display_header "Serving Kubernetes resources to host computer..."
 
 check_kubectl
 setup_port_forwarding
 trap cleanup EXIT
-
