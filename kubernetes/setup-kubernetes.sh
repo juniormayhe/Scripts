@@ -1,298 +1,150 @@
-#!/bin/bash
 RED='\033[1;31m'
 CYAN='\033[1;36m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-NO_COLOR='\033[0m'
+NC='\033[0m' # No Color
 CHECK="\u2714"
 
-prompt_user() {
-    local message="$1"
-    local timeout="$2"
+# Setup Kafka
+echo -e "\nSetting up your environment"
+echo -e "\n${YELLOW}ATTENTION: if you have any previous cluster setup on a different port, remove them all or reset Kubernetes Cluster in Docker before proceeding.${NC}"
 
-    echo -e "${CYAN}"
-    read -t "$timeout" -p "$message" user_input
-    echo -e "${NO_COLOR}"
-
-    if [ -n "$user_input" ]; then
-        echo "Operation aborted."
-        exit 1
-    fi
-}
-
-display_header() {
-    local message="$1"
-    echo -e "${CYAN}--------------------------------------"
-    echo -e "${CYAN}${message}"
-    echo -e "--------------------------------------${NO_COLOR}"
-}
-
-display_success() {
-    local message="$1"
-    echo -e "${GREEN}${CHECK}  ${message}${NO_COLOR}"
-}
-
-display_error(){
-    local message="$1"
-    echo -e "${RED}ERROR: ${message}${NO_COLOR}"
-}
-
-display_header "TruLabelSAS - Starting Kubernetes environment setup"
-
-prompt_user "Press ENTER key to update Linux or CTRL C to abort" 120
-
-# -----------------------------------
-display_header "Updating Linux on WSL 📦"
-
-sudo apt update -y
-sudo apt upgrade -y
-sudo apt install -y apt-transport-https ca-certificates curl gnupg xclip
-
-if [ $? -ne 0 ]; then
-    display_error "Failed to update Linux on WSL."
-    echo -e "Exiting the script."
-    exit 1
-fi
-
-display_success "Linux on WSL updated."
-
-
-prompt_user "Press ENTER key to prepare certificate or CTRL C to abort" 120
-
-# -----------------------------------
-display_header "Installing certificate 🏅"
-CERT_CONTENT=$(cat <<EOF
------BEGIN CERTIFICATE-----
-MIIE0zCCA7ugAwIBAgIJANu+mC2Jt3uTMA0GCSqGSIb3DQEBCwUAMIGhMQswCQYD
-VQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTERMA8GA1UEBxMIU2FuIEpvc2Ux
-FTATBgNVBAoTDFpzY2FsZXIgSW5jLjEVMBMGA1UECxMMWnNjYWxlciBJbmMuMRgw
-FgYDVQQDEw9ac2NhbGVyIFJvb3QgQ0ExIjAgBgkqhkiG9w0BCQEWE3N1cHBvcnRA
-enNjYWxlci5jb20wHhcNMTQxMjE5MDAyNzU1WhcNNDIwNTA2MDAyNzU1WjCBoTEL
-MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExETAPBgNVBAcTCFNhbiBK
-b3NlMRUwEwYDVQQKEwxac2NhbGVyIEluYy4xFTATBgNVBAsTDFpzY2FsZXIgSW5j
-LjEYMBYGA1UEAxMPWnNjYWxlciBSb290IENBMSIwIAYJKoZIhvcNAQkBFhNzdXBw
-b3J0QHpzY2FsZXIuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
-qT7STSxZRTgEFFf6doHajSc1vk5jmzmM6BWuOo044EsaTc9eVEV/HjH/1DWzZtcr
-fTj+ni205apMTlKBW3UYR+lyLHQ9FoZiDXYXK8poKSV5+Tm0Vls/5Kb8mkhVVqv7
-LgYEmvEY7HPY+i1nEGZCa46ZXCOohJ0mBEtB9JVlpDIO+nN0hUMAYYdZ1KZWCMNf
-5J/aTZiShsorN2A38iSOhdd+mcRM4iNL3gsLu99XhKnRqKoHeH83lVdfu1XBeoQz
-z5V6gA3kbRvhDwoIlTBeMa5l4yRdJAfdpkbFzqiwSgNdhbxTHnYYorDzKfr2rEFM
-dsMU0DHdeAZf711+1CunuQIDAQABo4IBCjCCAQYwHQYDVR0OBBYEFLm33UrNww4M
-hp1d3+wcBGnFTpjfMIHWBgNVHSMEgc4wgcuAFLm33UrNww4Mhp1d3+wcBGnFTpjf
-oYGnpIGkMIGhMQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTERMA8G
-A1UEBxMIU2FuIEpvc2UxFTATBgNVBAoTDFpzY2FsZXIgSW5jLjEVMBMGA1UECxMM
-WnNjYWxlciBJbmMuMRgwFgYDVQQDEw9ac2NhbGVyIFJvb3QgQ0ExIjAgBgkqhkiG
-9w0BCQEWE3N1cHBvcnRAenNjYWxlci5jb22CCQDbvpgtibd7kzAMBgNVHRMEBTAD
-AQH/MA0GCSqGSIb3DQEBCwUAA4IBAQAw0NdJh8w3NsJu4KHuVZUrmZgIohnTm0j+
-RTmYQ9IKA/pvxAcA6K1i/LO+Bt+tCX+C0yxqB8qzuo+4vAzoY5JEBhyhBhf1uK+P
-/WVWFZN/+hTgpSbZgzUEnWQG2gOVd24msex+0Sr7hyr9vn6OueH+jj+vCMiAm5+u
-kd7lLvJsBu3AO3jGWVLyPkS3i6Gf+rwAp1OsRrv3WnbkYcFf9xjuaf4z0hRCrLN2
-xFNjavxrHmsH8jPHVvgc1VD0Opja0l/BRVauTrUaoW6tE+wFG5rEcPGS80jjHK4S
-pB5iDj2mUZH1T8lzYtuZy0ZPirxmtsk3135+CKNa2OCAhhFjE0xd
------END CERTIFICATE-----
-EOF
-)
-
-# Create the certificate file
-CERT_ENTRY="SHA-256_Z-Scaler_Root_Certificate.crt"
-echo "$CERT_CONTENT" | sudo tee "/tmp/$CERT_ENTRY" > /dev/null
-
-# Move the certificate file to the appropriate directory
-sudo mv -f "/tmp/$CERT_ENTRY" "/usr/share/ca-certificates/$CERT_ENTRY" || { echo "Failed to move certificate file"; exit 1; }
-
-# Create a symbolic link
-sudo ln -s "/usr/share/ca-certificates/$CERT_ENTRY" "/etc/ssl/certs/$CERT_ENTRY" || { echo "Failed to create symbolic link. Maybe it already exists.";  }
-
-# Update the CA certificates configuration
-CA_CONF_FILE="/etc/ca-certificates.conf"
-
-# Check if the entry already exists
-if ! grep -Fxq "$CERT_ENTRY" "$CA_CONF_FILE"; then
-    # Entry does not exist, append it to the file
-    echo "$CERT_ENTRY" | sudo tee -a "$CA_CONF_FILE" || { echo "Failed to update CA certificates configuration"; exit 1; }
-    echo "CA certificates configuration updated successfully."
+# Dev user must have setup the NUGET PAT (key)
+echo -e "${CYAN}--------------------------------------"
+echo "Checking environment variables"
+echo -e "--------------------------------------${NC}"
+if [[ -z "${NUGET_PAT}" ]]; then
+  echo -e "${RED}"
+  echo -e "The NUGET_PAT environment variable was not found. Exiting the script.${NC}"
+  exit 1
 else
-    echo "Entry already exists in CA certificates configuration."
+  echo -e "${GREEN}${CHECK} The NUGET_PAT environment variable found: ${NUGET_PAT}${NC}"
 fi
 
-# Update the CA certificates
-sudo update-ca-certificates || { echo ""; exit 1; }
+echo -e "${CYAN}"
+read -t 120 -p "Press ENTER key to setup MongoDB or CTRL C to abort" user_input
+echo -e "${NC}"
 
+echo -e "${CYAN}--------------------------------------"
+echo "Setting up MongoDB pod"
+echo -e "--------------------------------------${NC}"
+kubectl apply -k ./LocalEnvironment/k8s-mongodb-statefulset
 if [ $? -ne 0 ]; then
-    display_error "Failed to update certificates."
-    echo -e "Exiting the script."
-    exit 1
-fi
-
-display_success "Certificate installed successfully."
-
-prompt_user "Press ENTER key to setup Kubernetes or CTRL C to abort" 120
-# -----------------------------------
-display_header "Installing Kubernetes 🎡"
-
-# Create the keyrings directory and download the GPG key
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://pkgs.k8s.io/core:/stable:/$(curl -ksL https://dl.k8s.io/release/stable.txt | sed 's/\.0$//')/deb/Release.key | sudo gpg --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-
-# Set the correct permissions for the GPG key
-sudo chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-
-# Download the kubectl binary
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-
-# Install the kubectl binary
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-
-# Verify the kubectl installation
-kubectl version --client
-
-if [ $? -ne 0 ]; then
-    display_error "Failed to install Kubernetes"
-    echo -e "Exiting the script."
-    exit 1
-fi
-
-display_success "Kubernetes installed successfully."
-
-
-prompt_user "Press ENTER key to setup Docker or CTRL C to abort" 120
-
-# -----------------------------------
-display_header "Installing Docker 🐋"
-
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --yes --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt update -y
-sudo apt install -y docker-ce docker-ce-cli containerd.io
-
-
-sudo usermod -aG docker $USER
-echo "You may need to close the terminal and reopen it later, to run docker commands without sudo."
-sudo systemctl enable docker
-sudo systemctl start docker
-sudo docker --version
-
-if [ $? -ne 0 ]; then
-    display_error "Failed to install Docker."
-    echo -e "Exiting the script."
-    exit 1
-fi
-
-display_success "Docker installed successfully."
-
-prompt_user "Press ENTER key to setup KinD to create kubernetes cluster or CTRL C to abort" 120
-
-# -----------------------------------
-display_header "Installing KinD 🚢"
-curl -Lo ./kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64
-chmod +x ./kind
-sudo mv ./kind /usr/local/bin/kind
-
-CLUSTER_NAME="kind"
-if kind get clusters | grep -q "^${CLUSTER_NAME}$"; then
-    echo "Cluster '${CLUSTER_NAME}' already exists."
+  echo -e "${RED}"
+  echo "ERROR: cannot run kubectl apply -k ./LocalEnvironment/k8s-mongodb-statefulset"
+  echo -e "Exiting the script.${NC}"
+  exit 1
 else
-    kind create cluster -n "${CLUSTER_NAME}"
+  echo -e "${GREEN}${CHECK} kubectl apply -k ./LocalEnvironment/k8s-mongodb-statefulset${NC}"
 fi
 
-kubectl cluster-info -–context kind-kind
+#kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=120s
+#echo "Sleeping for 120 seconds"
+#sleep 120
+echo -e "${CYAN}"
+read -t 120 -p "Press ENTER key to setup MongoDB cluster or CTRL C to abort" user_input
+echo -e "${NC}"
 
-kubectl get all -A
-if [ $? -ne 0 ]; then
-    display_error "Failed to install KinD."
-    echo -e "Exiting the script."
+echo -e "${CYAN}--------------------------------------"
+echo "Setting up MongoDB cluster"
+echo -e "--------------------------------------${NC}"
+kubectl exec -i mongo-0 -- bin/mongosh --eval '
+rs.initiate(
+  {
+    _id: "rs0",
+    members: [
+      { _id: 0, host : "mongo-0.mongo:27017" },
+    ]
+  }
+);
+'
+sleep 5
+
+# Add mongo-1 as a secondary member of the replica set
+echo "Adding mongo-1 as secondary..."
+kubectl exec -i mongo-0 -- bin/mongosh --eval '
+rs.add("mongo-1.mongo:27017")
+'
+sleep 5
+
+echo ""
+output=$(kubectl exec -i mongo-0 -- bin/mongosh --eval "rs.status()")
+if echo "$output" | grep -q 'health: 1' && echo "$output" | grep -q 'ok: 1'; then
+    echo -e "${GREEN}${CHECK} Mongo created!${NC}"
+else
+    echo -e "${RED}ERROR: Please review mongo creation${NC}"
+    echo -e "Exiting the script.${NC}"
     exit 1
 fi
 
-display_success "KinD installed successfully."
+echo -e "${CYAN}"
+read -t 120 -p "Press ENTER key to setup Kafka or CTRL C to abort" user_input
+echo -e "${NC}"
 
-prompt_user "Press ENTER key to apply deployments to Kubernetes or CTRL C to abort" 120
-
-# -----------------------------------
-display_header "Applying deployments 📃"
-
-# Define the sequence of YAML files
-yaml_files=(
-    "namespace.yaml"
-    "zookeeper.yaml"
-    "kafka.yaml"
-    "schema-registry.yaml"
-    "control-center.yaml"
-    #"init-topics.yaml" #uncomment if you want to create your topics 
-    "mongo.yaml"
-    "init-mongo.yaml"
-    #"kubernetes-dashboard.yaml"
-)
-
-for file in "${yaml_files[@]}"; do
-    echo "Applying $file..."
-    kubectl apply -f "$file"
-    if [ $? -ne 0 ]; then
-        display_error "Failed to apply $file"
-        echo -e "Exiting the script."
-        exit 1
-    fi
-done
-
-display_success "Deployments applied to Kubernetes successfully."
-
-prompt_user "Press ENTER key to setup Kubernetes dashaboard or CTRL C to abort" 120
-
-# -----------------------------------
-display_header "Installing Kubernetes dashboard 🎛️"
-curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-chmod 700 get_helm.sh
-./get_helm.sh
-
-helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
-helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
-
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: admin-user
-  namespace: kubernetes-dashboard
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: admin-user
-  namespace: kubernetes-dashboard
-  annotations:
-    kubernetes.io/service-account.name: "admin-user"
-type: kubernetes.io/service-account-token
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: admin-user
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
-subjects:
-- kind: ServiceAccount
-  name: admin-user
-  namespace: kubernetes-dashboard
-EOF
-
-# Get the secret and decode it, then store it in a variable
-K8S_DASH_SECRET=$(kubectl get secret admin-user -n kubernetes-dashboard -o jsonpath="{.data.token}" | base64 -d)
-
-# Copy the secret to the clipboard
-echo "$K8S_DASH_SECRET" | xclip -selection clipboard
-
-display_success "Dashboard secret copied to clipboard:"
-echo -e "$K8S_DASH_SECRET"
-
-
+echo -e "${CYAN}--------------------------------------"
+echo "Setting up Kafka"
+echo -e "--------------------------------------${NC}"
+echo "Creating directories"
+mkdir -p /c/kafka
+mkdir -p /c/kafka/data
+mkdir -p /c/zookeeper
+mkdir -p /c/zookeeper/data
+mkdir -p /c/zookeeper/log
+kubectl apply -k ./LocalEnvironment/k8s-kafka
 if [ $? -ne 0 ]; then
-    display_error "Failed to install KinD."
-    echo -e "Exiting the script."
+    echo -e "${RED}ERROR: cannot run kubectl apply -k ./LocalEnvironment/k8s-kafka"
+    echo -e "The kubectl command failed. Exiting the script.${NC}"
     exit 1
+else
+  echo -e "${GREEN}${CHECK} kubectl apply -k ./LocalEnvironment/k8s-kafka${NC}"
+  echo -e "${GREEN}${CHECK} Kafka setup done${NC}"
 fi
 
-display_success "KinD installed successfully."
+kubectl apply -f ./LocalEnvironment/k8s-ingress
+if [ $? -ne 0 ]; then
+    echo -e "${RED}ERROR: cannot run kubectl apply -f ./LocalEnvironment/k8s-ingress"
+    echo -e "The kubectl command failed. Exiting the script.${NC}"
+    exit 1
+else
+  echo -e "${GREEN}${CHECK} kubectl apply -f ./LocalEnvironment/k8s-ingress${NC}"
+  echo -e "${GREEN}${CHECK} Kafka setup done${NC}"
+fi
 
+echo -e "${CYAN}"
+read -t 120 -p "Press ENTER key to build docker images or CTRL C to abort" user_input
+echo -e "${NC}"
+
+echo -e "${CYAN}--------------------------------------"
+echo "Building docker images"
+echo -e "--------------------------------------${NC}"
+# declare -a arr=( "ServiceName")
+# for i in "${arr[@]}"
+# do
+# done
+docker-compose -f "./Docker/docker-compose.yaml" build
+if [ $? -ne 0 ]; then
+    echo -e "${RED}ERROR: cannot run docker-compose -f \"./Docker/docker-compose.yaml\" build"
+    echo -e "The docker-compose command failed. Exiting the script.${NC}"
+    exit 1
+else
+  echo -e "${GREEN}${CHECK} docker-compose -f \"./Docker/docker-compose.yaml\" build${NC}"
+  echo -e "${GREEN}${CHECK} Docker images setup done${NC}"
+fi
+
+echo -e "${CYAN}"
+read -t 120 -p "Press ENTER key to deploy docker images or CTRL C to abort" user_input
+echo -e "${NC}"
+
+echo -e "${CYAN}--------------------------------------"
+echo "Deploying images to kubernetes"
+echo -e "--------------------------------------${NC}"
+kubectl apply -k "./k8s/base"
+if [ $? -ne 0 ]; then
+    echo -e "${RED}ERROR: cannot run kubectl apply -k \"./k8s/base\""
+    echo -e "The kubectl command failed. Exiting the script.${NC}"
+    exit 1
+else
+  echo -e "${GREEN}${CHECK} kubectl apply -k \"./k8s/base\"${NC}"
+  echo -e "${GREEN}${CHECK} Docker images deployed${NC}"
+fi
 echo "Done!"
