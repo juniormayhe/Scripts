@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: init-kafka-topics
+  namespace: saas
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: init-kafka-topics
+  template:
+    metadata:
+      labels:
+        app: init-kafka-topics
+    spec:
+      restartPolicy: Always
+      initContainers:
+      - name: kafka-topic-creator
+        image: confluentinc/cp-kafka:7.5.0
+        env:
+          - name: SCHEMA_REGISTRY_URL
+            value: "http://schema-registry:8081"
+        command: ["sh", "-c", "
+          until /usr/bin/kafka-topics --bootstrap-server kafka:29092 --list; do 
+            echo 'Waiting for Kafka...'; 
+            sleep 5; 
+          done; 
+          
+          for topic in $(/usr/bin/kafka-topics --bootstrap-server kafka:29092 --list | grep '^localdev.'); do 
+            echo \"Deleting topic: $topic\"; 
+            /usr/bin/kafka-topics --bootstrap-server kafka:29092 --delete --topic $topic; 
+          done; 
+
+          /usr/bin/kafka-topics --bootstrap-server kafka:29092 --create --topic localdev.DocumentFound --partitions 1 --config cleanup.policy=delete; 
+          /usr/bin/kafka-topics --bootstrap-server kafka:29092 --create --topic localdev.DocumentFileReceived --partitions 1 --config cleanup.policy=delete; 
+          /usr/bin/kafka-topics --bootstrap-server kafka:29092 --create --topic localdev.ProcessingFailed --partitions 1 --config cleanup.policy=delete; 
+        "]
+      containers:
+      - name: main-container
+        image: alpine:latest
+        command: ["tail", "-f", "/dev/null"]
