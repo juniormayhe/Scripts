@@ -1,0 +1,22 @@
+# ATTENTION
+# Before running kubectl apply on this, delete the job manually: 
+# kubectl delete job mongodb-init -n saas
+#
+# This is needed to because Kubernetes treats the spec.template field as immutable 
+# once a Job object is created.  
+# You don't need to delete the job when using the setup script, 
+# it will delete the job automatically for you.
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mongodb-init
+  namespace: saas
+spec:
+  template:
+    spec:
+      containers:
+      - name: mongodb-init
+        image: mongo:6
+        command: ["sh", "-c", "sleep 60 && mongo mongodb-0.mongodb.saas.svc.cluster.local:27017/admin --eval 'rs.initiate({ _id: \"rs0\", members: [ { _id: 0, host: \"mongodb-0.mongodb.saas.svc.cluster.local:27017\" }, { _id: 1, host: \"mongodb-1.mongodb.saas.svc.cluster.local:27017\" }, { _id: 2, host: \"mongodb-2.mongodb.saas.svc.cluster.local:27017\" } ] })'"]
+      restartPolicy: OnFailure
