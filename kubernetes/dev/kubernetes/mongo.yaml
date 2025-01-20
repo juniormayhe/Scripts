@@ -1,11 +1,11 @@
 ##
 # you can expose to host like this:
-# kubectl port-forward svc/mongo 27017:27017 -n saas
+# kubectl port-forward svc/mongo 27017:27017 -n trulabelsas
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: mongo-account
-  namespace: saas
+  namespace: trulabelsas
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -32,7 +32,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: mongo-account
-    namespace: saas
+    namespace: trulabelsas
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -42,7 +42,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mongodb-replicaset
-  namespace: saas
+  namespace: trulabelsas
 spec:
   serviceName: "mongodb"
   replicas: 3
@@ -82,65 +82,81 @@ spec:
         requests:
           storage: 10Gi
 
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: mongodb
+#   namespace: trulabelsas
+# spec:
+#   type: ClusterIP
+#   ports:
+#   - port: 27017
+#     targetPort: 27017
+#   #clusterIP: None
+#   selector:
+#     app: mongodb
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb
-  namespace: saas
+  name: mongodb-loadbalancer
+  namespace: trulabelsas
 spec:
-  ports:
-  - port: 27017
-    targetPort: 27017
-  clusterIP: None
+  type: LoadBalancer
   selector:
     app: mongodb
+  ports:
+    - port: 27017
+      targetPort: 27017
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: mongodb-0
+#   namespace: trulabelsas
+# spec:
+#   type: ClusterIP
+#   ports:
+#   - port: 27017
+#     targetPort: 27017
+#   selector:
+#     statefulset.kubernetes.io/pod-name: mongodb-replicaset-0
 
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: mongodb-0
-  namespace: saas
-spec:
-  ports:
-  - port: 27017
-    targetPort: 27017
-  selector:
-    statefulset.kubernetes.io/pod-name: mongodb-replicaset-0
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: mongodb-1
+#   namespace: trulabelsas
+# spec:
+#   type: ClusterIP
+#   ports:
+#   - port: 27017
+#     targetPort: 27017
+#   selector:
+#     statefulset.kubernetes.io/pod-name: mongodb-replicaset-1
 
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mongodb-1
-  namespace: saas
-spec:
-  ports:
-  - port: 27017
-    targetPort: 27017
-  selector:
-    statefulset.kubernetes.io/pod-name: mongodb-replicaset-1
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mongodb-2
-  namespace: saas
-spec:
-  ports:
-  - port: 27017
-    targetPort: 27017
-  selector:
-    statefulset.kubernetes.io/pod-name: mongodb-replicaset-2
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: mongodb-2
+#   namespace: trulabelsas
+# spec:
+#   type: ClusterIP
+#   ports:
+#   - port: 27017
+#     targetPort: 27017
+#   selector:
+#     statefulset.kubernetes.io/pod-name: mongodb-replicaset-2
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: init-mongo
-  namespace: saas
+  namespace: trulabelsas
 spec:
   replicas: 1
   selector:
@@ -156,13 +172,13 @@ spec:
       - name: init-mongo
         image: mongo:6
         command: ["sh", "-c", "
-          while ! mongosh --quiet --host mongodb-replicaset-0.mongodb.saas.svc.cluster.local:27017 --eval 'db.runCommand({ ping: 1 }).ok' | grep 1 > /dev/null; do
+          while ! mongosh --quiet --host mongodb-replicaset-0.mongodb.trulabelsas.svc.cluster.local:27017 --eval 'db.runCommand({ ping: 1 }).ok' | grep 1 > /dev/null; do
             echo 'MongoDB replica is not ready yet. Retrying in 2 seconds...';
             sleep 2;
           done;
 
           echo 'Checking if the replica set is already initialized...';
-          mongosh mongodb-replicaset-0.mongodb.saas.svc.cluster.local:27017/admin --eval '
+          mongosh mongodb-replicaset-0.mongodb.trulabelsas.svc.cluster.local:27017/admin --eval '
             try {
               const status = rs.status();
               if (status.ok) {
@@ -170,8 +186,8 @@ spec:
                 const config = rs.conf();
                 config.members.splice(1, 2);
                 rs.reconfig(config, { force: true });
-                rs.add({ _id: 1, host: \"mongodb-replicaset-1.mongodb.saas.svc.cluster.local:27017\" });
-                rs.add({ _id: 2, host: \"mongodb-replicaset-2.mongodb.saas.svc.cluster.local:27017\" });
+                rs.add({ _id: 1, host: \"mongodb-replicaset-1.mongodb.trulabelsas.svc.cluster.local:27017\" });
+                rs.add({ _id: 2, host: \"mongodb-replicaset-2.mongodb.trulabelsas.svc.cluster.local:27017\" });
                 print(\"Replicas added back to the replica set.\");
                 quit();
               }
@@ -180,9 +196,9 @@ spec:
               rs.initiate({
                 _id: \"rs0\",
                 members: [
-                    { _id: 0, host: \"mongodb-replicaset-0.mongodb.saas.svc.cluster.local:27017\" },
-                    { _id: 1, host: \"mongodb-replicaset-1.mongodb.saas.svc.cluster.local:27017\" },
-                    { _id: 2, host: \"mongodb-replicaset-2.mongodb.saas.svc.cluster.local:27017\" }
+                    { _id: 0, host: \"mongodb-replicaset-0.mongodb.trulabelsas.svc.cluster.local:27017\" },
+                    { _id: 1, host: \"mongodb-replicaset-1.mongodb.trulabelsas.svc.cluster.local:27017\" },
+                    { _id: 2, host: \"mongodb-replicaset-2.mongodb.trulabelsas.svc.cluster.local:27017\" }
                 ]
               });
             }
