@@ -1,8 +1,9 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: control-center
-  namespace: saas
+  namespace: trulabelsas
 spec:
   replicas: 1
   selector:
@@ -43,7 +44,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: control-center
-  namespace: saas
+  namespace: trulabelsas
 spec:
   ports:
     - port: 9021
