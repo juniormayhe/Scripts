@@ -63,7 +63,7 @@ display_message() {
     fi
 }
 
-display_header "- Setting up Kubernetes environment"
+display_header "saas - Setting up Kubernetes environment"
 display_message "${YELLOW}To skip confirmations in the future, run ${NO_COLOR}./setup.sh -y"
 prompt_user "Press ENTER key to update Linux or CTRL+C to abort" 120
 
