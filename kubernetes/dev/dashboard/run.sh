@@ -52,7 +52,6 @@ display_warning(){
     echo -e "${YELLOW}WARNING: ${message}${NO_COLOR}"
 }
 
-
 display_message() {
     local message="$1"
     local nonewline="${2:-}"
@@ -60,6 +59,15 @@ display_message() {
         printf "${NO_COLOR}${message}\n${NO_COLOR}"
     else
         printf "${NO_COLOR}${message}${NO_COLOR}"
+    fi
+}
+
+kill_port() {
+    local port="$1"
+    local pid=$(lsof -t -i :"$port")
+    if [ -n "$pid" ]; then
+        display_warning "Killing existing process on port $port (PID: $pid)"
+        kill -9 "$pid"
     fi
 }
 
@@ -82,6 +90,9 @@ if ! kubectl get namespace kubernetes-dashboard &> /dev/null; then
     display_error "ERROR: The kubernetes-dashboard namespace does not exist. Please ensure the dashboard is installed and the namespace exists."
     exit 1
 fi
+
+# Kill any existing process on port 8443
+kill_port 8443
 
 display_message "🎛️ Starting kubectl port-forward in the background..."
 kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443 &
