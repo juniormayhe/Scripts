@@ -51,6 +51,23 @@ is_port_in_use() {
     fi
 }
 
+kill_port() {
+    local port=$1
+    if is_port_in_use "$port"; then
+        display_warning "Port $port is in use. Killing the process using this port..."
+        lsof -t -i:"$port" | xargs kill -9
+        if is_port_in_use "$port"; then
+            display_error "Failed to kill the process using port $port."
+            return 1
+        else
+            display_success "Successfully killed the process using port $port."
+            return 0
+        fi
+    else
+        return 0
+    fi
+}
+
 check_kubectl() {
     display_message "🔍 Checking Kubernetes..." "nonewline"
 
@@ -74,9 +91,9 @@ setup_port_forwarding() {
     display_message "Setting up port forwarding"
     display_warning "Press CTRL+C to stop this script..."
     echo
-    
+
     # Define your services and ports to be exposed to host computer
-    # <service name> <external port> <internal port> <namespace> 
+    # <service name> <external port> <internal port> <namespace>
     services=(
         "mongodb 27017 27017 saas"
         "kafka 9092 9092 saas"
@@ -95,15 +112,16 @@ setup_port_forwarding() {
             continue
         fi
 
-        if is_port_in_use "$port"; then
-            display_error "Port $port is already in use. Skipping $name."
-        else
-            echo "Forwarding $name: localhost:$port -> $target_port in namespace $namespace"
-            kubectl port-forward svc/"$name" "$port":"$target_port" -n "$namespace" &
-
-            forwarded_ports+=("$port")
-            pids+=($!)
+        if ! kill_port "$port"; then
+            display_error "Failed to kill the process using port $port. Skipping $name."
+            continue
         fi
+
+        echo "Forwarding $name: localhost:$port -> $target_port in namespace $namespace"
+        kubectl port-forward svc/"$name" "$port":"$target_port" -n "$namespace" &
+
+        forwarded_ports+=("$port")
+        pids+=($!)
     done
 
     echo "Press Ctrl+C to stop all port-forwarding processes..."
