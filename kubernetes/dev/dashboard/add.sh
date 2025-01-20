@@ -52,7 +52,7 @@ display_message() {
     fi
 }
 
-display_header "- Adding Kubernetes Dashboard"
+display_header "TruLabelSAS - Adding Kubernetes Dashboard"
 
 prompt_user "Press ENTER key to check Kubernetes installation or CTRL+C to abort" 120
 
