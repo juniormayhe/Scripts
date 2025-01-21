@@ -88,10 +88,7 @@ cleanup() {
 }
 
 setup_port_forwarding() {
-    display_message "Setting up port forwarding"
-    display_warning "Press CTRL+C to stop this script..."
-    echo
-
+    
     # Define your services and ports to be exposed to host computer
     # <service name> <external port> <internal port> <namespace>
     services=(
@@ -100,6 +97,10 @@ setup_port_forwarding() {
         "schema-registry 8082 8081 saas"
         "control-center 9021 9021 saas"
     )
+
+    echo -e "${CYAN}Press Ctrl+C to stop all port-forwarding processes.${NO_COLOR}"
+    display_message "Setting up port forwarding..."
+    echo
 
     for service in "${services[@]}"; do
         name=$(echo "$service" | awk '{print $1}')
@@ -118,19 +119,28 @@ setup_port_forwarding() {
         fi
 
         echo "Forwarding $name: localhost:$port -> $target_port in namespace $namespace"
+        
+        if ! kubectl get service "$name" &> /dev/null; then
+            display_error "Service $name not found. Review the name of the service in script."
+            continue
+        fi
+        
         kubectl port-forward svc/"$name" "$port":"$target_port" -n "$namespace" &
+        if [ $? -ne 0 ]; then
+            display_warning "There is no service running at ${port}."
+        fi
 
         forwarded_ports+=("$port")
         pids+=($!)
     done
 
-    echo "Press Ctrl+C to stop all port-forwarding processes..."
+    
     wait
 }
 
 trap cleanup EXIT
 
-display_header "- Serving Kubernetes resources to host computer..."
+display_header "Serving Kubernetes resources to host computer..."
 
 check_kubectl
 setup_port_forwarding
