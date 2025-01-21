@@ -39,6 +39,7 @@ display_header() {
 
 display_success() {
     local message="$1"
+    message=$(echo "$message" | sed 's/%20/ /g')
     echo -e "${GREEN}${CHECK} ${message}${NO_COLOR}"
 }
 
@@ -55,6 +56,7 @@ display_warning(){
 
 display_message() {
     local message="$1"
+    message=$(echo "$message" | sed 's/%20/ /g')
     local nonewline="${2:-}"
     if [ -z "$nonewline" ]; then
         printf "${NO_COLOR}${message}\n${NO_COLOR}"
@@ -63,7 +65,7 @@ display_message() {
     fi
 }
 
-display_header "- Setting up Kubernetes environment"
+display_header "TruLabelSAS - Setting up Kubernetes environment"
 display_message "${YELLOW}To skip confirmations in the future, run ${NO_COLOR}./setup.sh -y"
 prompt_user "Press ENTER key to update Linux or CTRL+C to abort" 120
 
@@ -240,9 +242,11 @@ display_success "KinD installed successfully."
 prompt_user "Press ENTER key to apply deployments to Kubernetes or CTRL+C to skip" 120
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 display_message "🔍 Validating Kubernetes manifests in '${SCRIPT_DIR}/kubernetes'... "
-if ! kubectl apply -k "${SCRIPT_DIR}/kubernetes" --dry-run=client &>/dev/null; then
+output=$(kubectl apply -k "${SCRIPT_DIR}/kubernetes" --dry-run=client 2>&1)
+if [ $? -ne 0 ]; then
     echo -e "${RED}FAILED${NO_COLOR}"
     display_error "Validation failed. Check your Kustomization setup or YAML files in './kubernetes'."
+    display_error "$output"
     exit 1
 fi
 display_success "Kubernetes manifests in '${SCRIPT_DIR}/kubernetes' are OK"
