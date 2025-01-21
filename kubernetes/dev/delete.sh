@@ -52,7 +52,7 @@ display_message() {
     fi
 }
 
-display_header "TruLabelSAS - Removing Kubernetes Dashboard"
+display_header "Removing Kubernetes Dashboard"
 
 display_message "🔍 Check for Helm installation... " "nonewline"
 if ! command -v helm &> /dev/null; then
