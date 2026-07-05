@@ -1,0 +1,11 @@
+Windows Registry Editor Version 5.00
+
+; Removes duplicate removable-drive entries in the Explorer navigation pane.
+; Drive-letter agnostic: kills the "Removable Drives" delegate folder that
+; causes every USB drive to render twice. Requires admin (HKLM).
+
+; 64-bit key
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\DelegateFolders\{F5FB2C77-0E2F-4A16-A381-3E560C68BC83}]
+
+; 32-bit (WOW64) key
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\DelegateFolders\{F5FB2C77-0E2F-4A16-A381-3E560C68BC83}]
